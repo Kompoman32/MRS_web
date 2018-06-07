@@ -1,0 +1,44 @@
+﻿@using MRS_web.Models.EDM
+@{
+    ViewBag.Title = "Список счётчиков";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        <th>Владелец</th>
+        <th>Название</th>
+        <th>Заводской номер</th>
+        <th>Дата производства</th>
+        <th>Установлен</th>
+        <th>Требуется продление</th>
+        <th></th>
+    </tr>
+
+    @{
+
+        foreach (Meter met in (IEnumerable<Meter>)ViewData["Meters"])
+        {
+            <tr>
+                <td>@met.User.FullName</td>
+                <td>@met.Name</td>
+                <td>@met.ProductionId</td>
+                <td>@met.ProductionDate.ToString("d")</td>
+                @{
+                    string str = "bool" + (met is InstalledMeter);
+                    <td class=@str></td>
+
+                    str = "bool";
+                    if (met is InstalledMeter)
+                    {
+                        str += ((InstalledMeter) met).ExpirationDate >= DateTime.Now;
+                    }
+
+                    <td class=@str></td>
+                }
+                <td>@Html.ActionLink("Посмотреть...", "Meter", "Database", new {MeterId = met.ProductionId}, null)</td>
+            </tr>
+        }
+    }
+</table>

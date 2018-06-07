@@ -1,0 +1,29 @@
+﻿@using MRS_web.Models.EDM
+@using Type = MRS_web.Models.EDM.Type
+@{
+    ViewBag.Title = "Список типов счётчиков";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        <th>Название</th>
+        <th>Единица измерения</th>
+    </tr>
+
+    @{
+        foreach (Type t in (IEnumerable<Type>)ViewData["Types"])
+        {
+            <tr>
+                <td>@t.Name</td>
+                <td>@t.Unit</td>
+            </tr>
+        }
+    }
+</table>
+

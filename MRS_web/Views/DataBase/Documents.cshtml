@@ -1,0 +1,29 @@
+﻿@using MRS_web.Models.EDM
+@{
+    ViewBag.Title = $"Список документов счётчика \"{ViewData["MeterName"]}\"";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        <th>Заголовок</th>
+        <th>Дата подписания</th>
+        <th>Текст</th>
+    </tr>
+
+    @{
+        foreach (Document doc in (IEnumerable<Document>)ViewData["Documents"])
+        {
+            <tr>
+                <td>@doc.Title</td>
+                <td>@doc.SigningDate.ToString("d")</td>
+                <td>@doc.Discription</td>
+            </tr>
+        }
+    }
+</table>

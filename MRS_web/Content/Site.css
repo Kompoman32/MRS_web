@@ -1,12 +1,7 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-/* Set padding to keep content from hitting the edges */
+﻿/* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -22,3 +17,68 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+body {
+    background: teal;
+    color: orange;
+    padding-top: 50px;
+    padding-left: 50px;
+    align-content: center;
+
+    font-size: 16px
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: "Comic Sans MS";
+}
+
+a {
+    color: greenyellow
+}
+
+a:hover {
+    color: lime
+}
+
+table tr th, td {
+    border: 2px solid white;
+    padding: 5px;
+}
+
+table tr:nth-child(even) {
+    background: #A69100;
+    color: #052D6E
+}
+table tr:nth-child(odd) {
+    background: #052D6E;
+    color: #A69100;
+}
+
+table.freeTable tr th,
+table.freeTable tr td {
+    border: 0;
+    background: teal;
+    color: orange;
+}
+
+td.boolTrue {
+    background-image: url('../Images/Sign.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+td.boolFalse {
+    background-image: url('../Images/RedCross.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.IncludedView a.backButton {
+    display: none
+}
+
+.error {
+    color: red;
+    size: 15px;
+}
+

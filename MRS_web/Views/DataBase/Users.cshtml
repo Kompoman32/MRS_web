@@ -1,0 +1,32 @@
+﻿@using MRS_web.Models.EDM
+@{
+    ViewBag.Title = "Список пользователей";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        <th>Логин</th>
+    </tr>
+
+    @{
+        foreach (User t in (IEnumerable<User>)ViewData["Users"])
+        {
+            <tr>
+                <td>@t.Login</td>
+                <td>@t.FullName</td>
+                @{
+                    string s = "bool"+ t.AdminPrivileges;
+                    <td class =@s></td>
+                }
+
+            </tr>
+        }
+    }
+</table>
+

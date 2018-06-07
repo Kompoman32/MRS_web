@@ -1,7 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using MRS_web.Models.EDM
+@{
+    User user = Session["User"] as MRS_web.Models.EDM.User;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title – приложение ASP.NET</title>
@@ -13,28 +18,55 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <img src=~/Images/Logo.png width=30 height=30/>
                 </button>
-                @Html.ActionLink("Имя приложения", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
-                    <li>@Html.ActionLink("О программе", "About", "Home")</li>
-                    <li>@Html.ActionLink("Контакт", "Contact", "Home")</li>
+                <ul id="nav-list" class="nav navbar-nav">
+                    @{
+                        if (Session["User"] is MRS_web.Models.EDM.User)
+                        {
+                            if (user.AdminPrivileges)
+                            {
+                                <li>@Html.ActionLink("База данных", "DataBase", "Admin")</li>
+                                <li>@Html.ActionLink("Добавить счётчик", "AddMeter", "Admin")</li>
+                                <li>@Html.ActionLink("Продлить счётчик", "ExtendMeter", "Admin")</li>
+                                <li>@Html.ActionLink("Удалить счётчик", "DeleteMeter", "Admin")</li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink("Список счётчиков", "MetersList", "Database")</li>
+                                <li>@Html.ActionLink("Добавить счётчик", "AddMeter", "User")</li>
+                            }
+
+                            <li>@Html.ActionLink("Выйти", "SignIn", "Home", new { signOut = true }, null)</li>
+                        }
+                    }
                 </ul>
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
+
+@RenderBody()
+    
+<div class="container body-content">
+    <hr/>
+        @{
+            if (user != null)
+            {
+                string s = "Вы вошли как: ";
+                s += user.AdminPrivileges ? "Администратор - " : "Пользователь - ";
+                s += user.FullName;
+                <div style="color: red; font-size: 40px;">
+                    @s
+                </div>
+            }
+        }
+
+        <footer >
             <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
         </footer>
-    </div>
+</div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

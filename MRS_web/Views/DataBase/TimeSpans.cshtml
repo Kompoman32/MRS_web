@@ -1,0 +1,31 @@
+﻿@using MRS_web.Models.EDM
+@using TimeSpan = MRS_web.Models.EDM.TimeSpan
+@{
+    ViewBag.Title = $"Список промежтков тарифа \"{ViewData["TariffName"]}\"";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        <th>Название</th>
+        <th>Время начала</th>
+        <th>Время окончания</th>
+    </tr>
+
+    @{
+        foreach (TimeSpan ts in (IEnumerable<TimeSpan>)ViewData["TimeSpans"])
+        {
+            <tr>
+                <td>@ts.Name</td>
+                <td>@ts.TimeStart</td>
+                <td>@ts.TimeEnd</td>
+            </tr>
+        }
+    }
+</table>
+

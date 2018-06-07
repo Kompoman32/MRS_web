@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<style>
+    center div {
+        font-size: 20px
+    }
+
+    .error {
+        color: #aa0000
+    }
+
+    #bSignIn {
+        border-radius: 5px;
+        width: 30%;
+        font-size: 20px
+    }
+    input {
+        background:black;
+        color: lime
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    <center>
+        <div>
+            <br />
+            Логин<br />
+            <input name="login" /><br />
+            <p class="error">
+                @Html.ValidationMessage("Login")
+                @Html.ValidationMessage("UserLogin")
+            </p>
+            <br/>
+        </div>
+
+        <div>
+            Пароль<br />
+            <input name="password" type="password" /><br />
+            <p class="error">
+                @Html.ValidationMessage("Password")
+                @Html.ValidationMessage("UserPassword")
+            </p>
+            <br />
+        </div>
+        
+        <div>
+            <button id="bSignIn" type="submit">Войти</button><br/>
+            <input name="saveMe" type="checkbox"> Запомнить меня<br />
+            <p>@Html.ActionLink("Нет аккаунта ?","SignUp","Home")</p>
+        </div>     
+    </center>
+}
