@@ -85,15 +85,15 @@ namespace MRS_web.Controllers
 
         // UserCombobox || MeterCombobox
         [HttpPost]
-        [MultiPost(countAttribute = 2, NameOfAttributes = "action")]
-        public ActionResult ExtendMeter(string[] action)
+        [MultiPost(countAttribute = 2, NameOfAttributes = "actionExt")]
+        public ActionResult ExtendMeter(string[] actionExt)
         {
-            ViewData["SelectedUserLogin"] = action[0];
+            ViewData["SelectedUserLogin"] = actionExt[0];
 
-            if (long.TryParse(action[1], out long prodId))
+            if (long.TryParse(actionExt[1], out long prodId))
             {
-                if (_DataManager.MetRepo.GetMeter(prodId).User.Login != action[0])
-                    return ExtendMeter(action[0]);
+                if (_DataManager.MetRepo.GetMeter(prodId).User.Login != actionExt[0])
+                    return ExtendMeter(actionExt[0]);
 
                 ViewData["SelectedMeterId"] = prodId;
             }
@@ -103,12 +103,12 @@ namespace MRS_web.Controllers
 
         // NewDateButton
         [HttpPost]
-        [MultiPost(countAttribute = 3, NameOfAttributes = "action")]
-        public ActionResult ExtendMeter(string[] action, DateTime? InputDate)
+        [MultiPost(countAttribute = 3, NameOfAttributes = "actionExt")]
+        public ActionResult ExtendMeter(string[] actionExt, DateTime? InputDate)
         {
             ViewData["NewDate"] = InputDate?.ToString("yyyy-MM-dd");
 
-            if (!long.TryParse(action[1], out long prodId))
+            if (!long.TryParse(actionExt[1], out long prodId))
                 return ExtendMeter();
 
             if (InputDate != null)
@@ -119,7 +119,7 @@ namespace MRS_web.Controllers
             else ModelState.AddModelError("Date", "Заполните дату");
 
             if (!ModelState.IsValid)
-                return ExtendMeter(new []{action[0], action[1]});
+                return ExtendMeter(new []{ actionExt[0], actionExt[1]});
 
             _DataManager.InstMetRepo.EditMeter(prodId, InstalledMeter.Fields.ExpirationDate, InputDate.ToString());
 

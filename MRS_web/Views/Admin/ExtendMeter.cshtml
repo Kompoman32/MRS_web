@@ -18,7 +18,7 @@
                 Пользователь:
             </td>
             <td>
-                <select name="action" onchange="this.form.submit();">
+                <select name="actionExt" onchange="this.form.submit();">
                     @foreach (var us in usersList)
                     {
                         object sel = us.Login.Equals(ViewData["SelectedUserLogin"].ToString()) ? "selected" : null;
@@ -34,7 +34,7 @@
                 Счётчик:
             </td>
             <td>
-                <select name="action" onchange="this.form.submit();">
+                <select name="actionExt" onchange="this.form.submit();">
                     @foreach (var met in metersList)
                     {
                         object sel = met.ProductionId.Equals((long)ViewData["SelectedMeterId"]) ? "selected" : null;
