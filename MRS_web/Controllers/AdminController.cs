@@ -70,14 +70,15 @@ namespace MRS_web.Controllers
 
             ViewData["Meter"] = met;
             ViewData["MeterName"] = met.Name;
+            ViewData["NewDate"] = ViewData["NewDate"] ?? (met as InstalledMeter)?.ExpirationDate.ToString("yyyy-MM-dd");
 
             return View();
         }
         
         // UserCombobox
-        public ActionResult ExtendMeter(string[] action)
+        public ActionResult ExtendMeter(string userLogin)
         {
-            ViewData["SelectedUserLogin"] = action[0];
+            ViewData["SelectedUserLogin"] = userLogin;
 
             return ExtendMeter();
         }
@@ -85,7 +86,7 @@ namespace MRS_web.Controllers
         // UserCombobox || MeterCombobox
         [HttpPost]
         [MultiPost(countAttribute = 2, NameOfAttributes = "action")]
-        public ActionResult ExtendMeter(string[] action, object notUsed)
+        public ActionResult ExtendMeter(string[] action)
         {
             ViewData["SelectedUserLogin"] = action[0];
 
@@ -118,9 +119,11 @@ namespace MRS_web.Controllers
             else ModelState.AddModelError("Date", "Заполните дату");
 
             if (!ModelState.IsValid)
-                return ExtendMeter(new []{action[0], action[1]}, notUsed:null);
+                return ExtendMeter(new []{action[0], action[1]});
 
-            return RedirectToAction("Index");
+            _DataManager.MetRepo.Edit(prodId, InstalledMeter.Fields.ExpirationDate, InputDate.ToString());
+
+            return RedirectToAction("Meter","Database",new { MeterId = prodId});
         }
 
         public ActionResult DeleteMeter()
