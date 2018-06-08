@@ -31,6 +31,22 @@ namespace MRS_web.Models.Repos
             return req.Any() ? req.First():null;
         }
 
+        public void DeleteUser(string login)
+        {
+            User us = GetUser(login);
+
+            {
+                MeterRepository metRepo = new MeterRepository(cont);
+
+                foreach (Meter met in us.Meters)
+                    metRepo.DeleteMeter(met.ProductionId);
+            }
+
+            cont.UserSet.Remove(us);
+
+            cont.SaveChanges();
+        }
+
         //TODO: добавление удаление edit
     }
 }

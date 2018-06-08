@@ -20,9 +20,20 @@ namespace MRS_web.Models.Repos
             return (from d in cont.DocumentSet orderby d.Title select d);
         }
 
-        public Document GetDocument(int id)
+        public Document GetDocument(long id)
         {
             return cont.DocumentSet.Find(id);
+        }
+
+        public void DeleteDocument(long id)
+        {
+            Document doc = GetDocument(id);
+
+            doc.Meter.Documents.Remove(doc);
+
+            cont.DocumentSet.Remove(doc);
+
+            cont.SaveChanges();
         }
 
         //TODO: добавление удаление edit

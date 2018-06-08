@@ -25,6 +25,6 @@ namespace MRS_web.Models.Repos
             return cont.TariffSet.Find(id);
         }
 
-        //TODO: добавление удаление edit
+        //TODO: добавление удаление(x) edit
     }
 }

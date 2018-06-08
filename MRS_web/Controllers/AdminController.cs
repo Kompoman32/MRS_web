@@ -93,7 +93,7 @@ namespace MRS_web.Controllers
             if (long.TryParse(action[1], out long prodId))
             {
                 if (_DataManager.MetRepo.GetMeter(prodId).User.Login != action[0])
-                    return ExtendMeter(new[] {action[0]});
+                    return ExtendMeter(action[0]);
 
                 ViewData["SelectedMeterId"] = prodId;
             }
@@ -121,14 +121,70 @@ namespace MRS_web.Controllers
             if (!ModelState.IsValid)
                 return ExtendMeter(new []{action[0], action[1]});
 
-            _DataManager.MetRepo.Edit(prodId, InstalledMeter.Fields.ExpirationDate, InputDate.ToString());
+            _DataManager.InstMetRepo.EditMeter(prodId, InstalledMeter.Fields.ExpirationDate, InputDate.ToString());
 
             return RedirectToAction("Meter","Database",new { MeterId = prodId});
         }
 
+        [HttpGet]
         public ActionResult DeleteMeter()
         {
+            ViewData["UsersList"] = _DataManager.UserRepo.Users();
+            if (ViewData["SelectedUserLogin"] == null)
+                ViewData["SelectedUserLogin"] = _DataManager.UserRepo.Users().First().Login;
+
+            ViewData["MetersList"] = _DataManager.UserRepo.GetUser(ViewData["SelectedUserLogin"].ToString()).Meters;
+
+
+            if (ViewData["SelectedMeterId"] == null)
+                ViewData["SelectedMeterId"] = ((IEnumerable<Meter>)ViewData["MetersList"]).First().ProductionId;
+
+            Meter met = _DataManager.MetRepo.GetMeter((long)ViewData["SelectedMeterId"]);
+
+            ViewData["Meter"] = met;
+            ViewData["MeterName"] = met.Name;
+
             return View();
+        }
+
+        // UserCombobox
+        public ActionResult DeleteMeter(string userLogin)
+        {
+            ViewData["SelectedUserLogin"] = userLogin;
+
+            return DeleteMeter();
+        }
+
+        // UserCombobox || MeterCombobox
+        [HttpPost]
+        [MultiPost(countAttribute = 2, NameOfAttributes = "actionDel")]
+        public ActionResult DeleteMeter(string[] actionDel)
+        {
+            ViewData["SelectedUserLogin"] = actionDel[0];
+
+            if (long.TryParse(actionDel[1], out long prodId))
+            {
+                if (_DataManager.MetRepo.GetMeter(prodId).User.Login != actionDel[0])
+                    return DeleteMeter(actionDel[0]);
+
+                ViewData["SelectedMeterId"] = prodId;
+            }
+
+            return DeleteMeter();
+        }
+
+        [HttpPost]
+        [MultiPost(countAttribute = 3, NameOfAttributes = "actionDel")]
+        public ActionResult DeleteMeter(string[] actionDel, object notUsed)
+        {
+            if (long.TryParse(actionDel[1], out long prodId))
+            {
+                _DataManager.MetRepo.DeleteMeter(prodId);
+                
+                return RedirectToAction("MetersList", "Database");
+            }
+
+            return DeleteMeter();
         }
     }
 }

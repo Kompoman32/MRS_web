@@ -20,11 +20,22 @@ namespace MRS_web.Models.Repos
             return (from t in cont.ReadingSet orderby t.Meter.ProductionId select t);
         }
 
-        public Reading GetReading(int id)
+        public Reading GetReading(long id)
         {
             return cont.ReadingSet.Find(id);
         }
 
-        //TODO: добавление удаление edit
+        public void DeleteReading(long id)
+        {
+            Reading read = GetReading(id);
+
+            read.Meter.Readings.Remove(read);
+
+            cont.ReadingSet.Remove(read);
+
+            cont.SaveChanges();
+        }
+
+        //TODO: добавление edit
     }
 }

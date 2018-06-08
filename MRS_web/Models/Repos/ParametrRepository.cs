@@ -25,6 +25,18 @@ namespace MRS_web.Models.Repos
             return cont.ParametrSet.Find(id);
         }
 
-        //TODO: добавление удаление edit
+        public void DeleteParametr(int id)
+        {
+            Parametr par = GetParametr(id);
+
+            foreach (Meter met in par.Meters)
+                met.Parametrs.Remove(par);
+            
+            cont.ParametrSet.Remove(par);
+
+            cont.SaveChanges();
+        }
+
+        //TODO: добавление edit
     }
 }

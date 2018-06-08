@@ -61,25 +61,34 @@ namespace MRS_web.Models.Repos
             cont.SaveChanges();
         }
 
-        public void Edit(long meterId, InstalledMeter.Fields fieldToEdit, string value)
+        public void DeleteMeter(long meterId)
         {
-            InstalledMeter met = GetMeter(meterId) as InstalledMeter;
+            Meter met = GetMeter(meterId);
 
-            if (met ==null)
-                return;
-
-            switch (fieldToEdit)
             {
-                case InstalledMeter.Fields.ExpirationDate:
-                    if (DateTime.TryParse(value, out DateTime dtVal) && met.ExpirationDate != dtVal)
-                        met.ExpirationDate = dtVal;
-                    break;
-                default:
-                    throw new NotImplementedException();
+                DocumentRepository docRepo = new DocumentRepository(cont);
+
+                foreach (Document doc in met.Documents)
+                {
+                    docRepo.DeleteDocument(doc.Id);
+                }
             }
+
+            {
+                ReadingRepository readRepo = new ReadingRepository(cont);
+
+                foreach (Reading reading in met.Readings)
+                {
+                    readRepo.DeleteReading(reading.Id);
+                }
+            }
+
+            met.User.Meters.Remove(met);
+
+            cont.MeterSet.Remove(met);
 
             cont.SaveChanges();
         }
-        //TODO: добавление удаление
+        //TODO: добавление
     }
 }
