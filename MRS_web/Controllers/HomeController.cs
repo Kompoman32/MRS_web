@@ -33,7 +33,7 @@ namespace MRS_web.Controllers
                 }
             }
 
-            if (aCookie != null && aCookie.Expires >= DateTime.Now)
+            if (aCookie != null)
                 return SignIn(aCookie.Values["UserLogin"], aCookie.Values["UserPass"],"on"); 
 
             return View();
