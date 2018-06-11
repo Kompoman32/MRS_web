@@ -53,6 +53,8 @@ namespace MRS_web.Controllers
             return View();
         }
 
+        #region Extend
+        
         [HttpGet]
         public ActionResult ExtendMeter()
         {
@@ -126,6 +128,10 @@ namespace MRS_web.Controllers
             return RedirectToAction("Meter","Database",new { MeterId = prodId});
         }
 
+        #endregion Extend
+
+        #region Delete
+        
         [HttpGet]
         public ActionResult DeleteMeter()
         {
@@ -186,5 +192,7 @@ namespace MRS_web.Controllers
 
             return DeleteMeter();
         }
+
+        #endregion Delete
     }
 }
