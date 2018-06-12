@@ -17,7 +17,7 @@ namespace MRS_web.Models.Repos
 
         public IEnumerable<Tariff> Tariffs()
         {
-            return (from t in cont.TariffSet orderby t.Name select t);
+            return (from t in cont.TariffSet orderby t.Id select t);
         }
 
         public Tariff GetTariff(int id)
