@@ -25,7 +25,8 @@ namespace MRS_web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/Site.css"));
+                      "~/Content/Site.css",
+                      "~/Content/Var.css"));
         }
     }
 }
