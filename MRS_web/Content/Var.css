@@ -1,0 +1,11 @@
+﻿:root {
+    --font-size: 16px;
+    --font-family: "Comic Sans MS";
+    --backclr: teal;
+    --fontclr: orange;
+    --link: greenyellow;
+    --linkHov: lime;
+    --tableEven: #A69100;
+    --tableOdd: #052D6E;
+    --border: white;
+}

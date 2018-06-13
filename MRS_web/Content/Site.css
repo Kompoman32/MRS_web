@@ -1,4 +1,7 @@
-﻿/* Set padding to keep content from hitting the edges */
+﻿var
+
+
+/* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 5px;
     padding-right: 5px;
@@ -15,13 +18,12 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 380px;
 }
 
-
 body {
-    background: teal;
-    color: orange;
+    background: var(--backclr);
+    color: var(--fontclr);
     padding-top: 50px;
     padding-left: 50px;
     align-content: center;
@@ -30,36 +32,42 @@ body {
 }
 
 body, h1, h2, h3, h4, h5, h6 {
-    font-family: "Comic Sans MS";
+    font-family: var(--font-family);
+    font-size: var(--font-size)
 }
 
 a {
-    color: greenyellow
+    color: var(--link)
 }
 
 a:hover {
-    color: lime
+    color: var(--linkHov)
+}
+
+table {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 table tr th, td {
-    border: 2px solid white;
+    border: 2px solid var(--border);
     padding: 5px;
 }
 
 table tr:nth-child(even) {
-    background: #A69100;
-    color: #052D6E
+    background: var(--tableEven);
+    color: var(--tableOdd)
 }
 table tr:nth-child(odd) {
-    background: #052D6E;
-    color: #A69100;
+    background: var(--tableOdd);
+    color: var(--tableEven);
 }
 
 table.freeTable tr th,
 table.freeTable tr td {
     border: 0;
-    background: teal;
-    color: orange;
+    background: var(--backclr);
+    color: var(--fontclr);
 }
 
 td.boolTrue {
@@ -80,5 +88,18 @@ td.boolFalse {
 .error {
     color: red;
     size: 15px;
+}
+
+.InfoTable tr > td {
+    border: 2px solid var(--border) !important;
+}
+
+.InfoTable  tr > td:nth-child(1) {
+    background: var(--tableOdd);
+    text-align: right;
+}
+
+.InfoTable tr > td:nth-child(2) {
+    background: var(--tableEven);
 }
 
