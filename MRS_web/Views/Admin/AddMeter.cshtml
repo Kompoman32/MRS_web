@@ -10,8 +10,10 @@
             e.preventDefault();
             var name = $('#tariffCount').val();
             name=encodeURIComponent(name);
-            $('#trifesResult').load('@Url.Action("Tariffes", "Admin")?Count=' + name);
+            $('#triffesResult').load('@Url.Action("Tariffes", "Admin")?Count=' + name);
         });
+
+        $('#tariffCount').trigger('change');
 
         // Документы
 
@@ -132,7 +134,7 @@
     IEnumerable<Tariff> tariffes = ViewData["Tariffs"] as IEnumerable<Tariff>;
     IEnumerable<Document> documents = ViewData["Documents"] as IEnumerable<Document>;
     IEnumerable<MRS_web.Models.EDM.Type> types = ViewData["Types"] as IEnumerable<MRS_web.Models.EDM.Type>;
-    IEnumerable<Reading> readings = ViewData["Readings"] as IEnumerable<Reading>;
+    string[] readings = ViewData["Readings"]?.ToString().Split(',');
     IEnumerable<Parametr> meterParameters = ViewData["MeterParameters"] as IEnumerable<Parametr>;
     IEnumerable<Parametr> stockParameters = ViewData["StockParameters"] as IEnumerable<Parametr>;
 }
@@ -260,14 +262,14 @@
                             <td>Показания по тарифу 1</td>
                             <td>
                                 @{
-                                    var stri = readings?.First().Value;
-                                    <input name="Reading" type="number" min="0" max=@double.MaxValue value=@stri />}
-                                    @Html.ValidationMessage("Reading0", new { @class = "text-danger" });
+                                    var stri = readings?.First();
+                                    <input name="Reading" type="number" step="any" min="0" max=@double.MaxValue value=@stri />}
+                                    @Html.ValidationMessage("Reading0", new { @class = "text-danger" })
                                 </td>
                             </tr>
                         </table>
 
-                        <div id="trifesResult"></div>
+                        <div id="triffesResult"></div>
                     </div>
                 </td>
         </tr>

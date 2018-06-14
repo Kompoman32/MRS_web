@@ -63,7 +63,8 @@ namespace MRS_web.Controllers
             Session["AddMetProductionDate"] = Request.Form["ProductionDate"] != null && Request.Form["ProductionDate"] != "" ? Request.Form["ProductionDate"] : Session["AddMetProductionDate"];
             Session["AddMetExpirationDate"] = Request.Form["ExpirationDate"] != null && Request.Form["ExpirationDate"] != "" ? Request.Form["ExpirationDate"] : Session["AddMetExpirationDate"];
             Session["AddMetTypeId"] = Request.Form["TypeId"] != null && Request.Form["TypeId"] != "" ? Request.Form["TypeId"] : Session["AddMetTypeId"];
-            Session["AddMetReadings"] = Request.Form["Readings"] != null && Request.Form["Readings"] != "" ? Request.Form["Readings"] : Session["AddMetReadings"];
+            Session["AddMetTariffId"] = Request.Form["TariffId"] != null && Request.Form["TariffId"] != "" ? Request.Form["TariffId"] : Session["AddMetTariffId"];
+            Session["AddMetReadings"] = Request.Form["Reading"] != null && Request.Form["Reading"] != "" ? Request.Form["Reading"] : Session["AddMetReadings"];
             Session["AddMetParameters"] = Request.Form["MeterParameters"] != null && Request.Form["MeterParameters"] != "" ? Request.Form["MeterParameters"] : Session["AddMetParameters"];
 
 
@@ -80,6 +81,7 @@ namespace MRS_web.Controllers
             ViewData["Types"] = _DataManager.TypeRepo.Types();
             ViewData["TypeId"] = Session["AddMetTypeId"];
             ViewData["Tariffs"] = _DataManager.TarRepo.Tariffs();
+            ViewData["TariffId"] = Session["AddMetTariffId"];
             ViewData["Readings"] = Session["AddMetReadings"];
             ViewData["Documents"] = Session["AddMetDocuments"]??new List<Document>();
             ViewData["MeterParameters"] = Session["AddMetrParameters"];
@@ -106,7 +108,7 @@ namespace MRS_web.Controllers
                 ExpirationDate, TariffId,Reading, meterParameters))
                 return View();
 
-            double Capacity = double.Parse((new string('9', (int)CapacityBefComma) + '.' +
+            double Capacity = double.Parse((new string('9', (int)CapacityBefComma) + ',' +
                                             new string('9', (int)CapacityAftComma)).TrimEnd('.'));
             List<Document> docs = Session["AddMetDocuments"] as List<Document>;
             
@@ -164,6 +166,9 @@ namespace MRS_web.Controllers
             {
                 if(Reading[i].IsNullOrWhiteSpace())
                     ModelState.AddModelError("Reading"+i, "Заполните поле");
+
+                if(CapacityBefComma !=null && Reading[i].TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9').TrimEnd('.',',').Length > CapacityBefComma)
+                    ModelState.AddModelError("Reading" + i, "Значение не может быть больше размерности");
             }
             
             return ModelState.IsValid;
