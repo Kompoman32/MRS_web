@@ -33,7 +33,7 @@ namespace MRS_web.Controllers
             User user = (User) Session["User"];
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
-            if (!user.AdminPrivileges && met.User != user)
+            if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
             ViewData["MeterName"] = met.Name;
@@ -93,7 +93,7 @@ namespace MRS_web.Controllers
             User user = (User)Session["User"];
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
-            if (!user.AdminPrivileges && met.User != user)
+            if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
             ViewData["MeterName"] = met.Name;
@@ -107,7 +107,7 @@ namespace MRS_web.Controllers
             User user = (User)Session["User"];
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
-            if (!user.AdminPrivileges && met.User != user)
+            if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
             ViewData["MeterName"] = met.Name;
@@ -122,7 +122,7 @@ namespace MRS_web.Controllers
             User user = (User)Session["User"];
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
-            if (!user.AdminPrivileges && met.User != user)
+            if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
             ViewData["MeterName"] = met.Name;
