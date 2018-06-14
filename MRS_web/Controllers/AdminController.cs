@@ -122,7 +122,7 @@ namespace MRS_web.Controllers
                 readings.Add(new Reading{TariffNumber= counter++, Value = double.Parse(read)});
             
 
-            _DataManager.MetRepo.Add(Name,Description,Capacity, (long)ProductionId,(DateTime)ProductionDate,parameters,_DataManager.TarRepo.GetTariff((int)TariffId),_DataManager.TypeRepo.GetType((int)TypeId),docs,_DataManager.UserRepo.GetUser(User), readings);
+            _DataManager.InstMetRepo.Add(Name,Description,Capacity, (long)ProductionId,(DateTime)ProductionDate,(DateTime)ExpirationDate, parameters,_DataManager.TarRepo.GetTariff((int)TariffId),_DataManager.TypeRepo.GetType((int)TypeId),docs,_DataManager.UserRepo.GetUser(User), readings);
             
             return RedirectToAction("Meter","Database",new {MeterId = ProductionId});
             
