@@ -278,7 +278,7 @@
     <Content Include="Views\DataBase\Tariffes.cshtml" />
     <Content Include="Views\DataBase\TimeSpans.cshtml" />
     <Content Include="Views\DataBase\Types.cshtml" />
-    <Content Include="Views\DataBase\Users.cshtml" />
+    <Content Include="Views\DataBase\UserList.cshtml" />
     <Content Include="Views\DataBase\Readings.cshtml" />
     <Content Include="Views\DataBase\Parameters.cshtml" />
     <Content Include="Views\DataBase\Meter.cshtml" />
@@ -290,6 +290,7 @@
     <Content Include="Views\Admin\PartialViews\Documents.cshtml" />
     <Content Include="Views\Admin\AddMeter.cshtml" />
     <Content Include="Views\DataBase\ParametersList.cshtml" />
+    <Content Include="Views\DataBase\UserInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

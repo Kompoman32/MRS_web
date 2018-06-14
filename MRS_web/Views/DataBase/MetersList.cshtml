@@ -36,7 +36,7 @@
                     str = "bool";
                     if (met is InstalledMeter)
                     {
-                        str += ((InstalledMeter) met).ExpirationDate >= DateTime.Now;
+                        str += ((InstalledMeter) met).ExpirationDate < DateTime.Now;
                     }
 
                     <td class=@str></td>

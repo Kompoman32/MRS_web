@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using MRS_web.Models;
 using MRS_web.Models.EDM;
 
@@ -18,9 +19,11 @@ namespace MRS_web.Controllers
             _DataManager = dm;
         }
 
-        public ActionResult MetersList()
+        public ActionResult MetersList(string userLogin="")
         {
             ViewData["Meters"] = ((User)Session["User"]).AdminPrivileges? _DataManager.MetRepo.Meters(): ((User)Session["User"]).Meters;
+            if (((User) Session["User"]).AdminPrivileges && !userLogin.IsNullOrWhiteSpace())
+                ViewData["Meters"] = _DataManager.UserRepo.GetUser(userLogin)?.Meters;
 
             return View();
         }
@@ -39,9 +42,16 @@ namespace MRS_web.Controllers
             return View();
         }
 
-        public ActionResult Users()
+        public ActionResult UserList()
         {
             ViewData["Users"] = _DataManager.UserRepo.Users();
+
+            return View();
+        }
+
+        public ActionResult UserInfo(string UserLogin)
+        {
+            ViewData["User"] = _DataManager.UserRepo.GetUser(UserLogin);
 
             return View();
         }

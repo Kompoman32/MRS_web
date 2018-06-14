@@ -66,14 +66,14 @@ table.freeTable tr td {
 }
 
 td.boolTrue {
-    background-image: url('../Images/Sign.png');
-    background-repeat: no-repeat;
-    background-position: center center;
+    background-image: url('../Images/Sign.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
 }
 td.boolFalse {
-    background-image: url('../Images/RedCross.png');
-    background-repeat: no-repeat;
-    background-position: center center;
+    background-image: url('../Images/RedCross.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
 }
 
 .IncludedView a.backButton {
@@ -91,10 +91,12 @@ td.boolFalse {
 
 .InfoTable  tr > td:nth-child(1) {
     background: var(--tableOdd);
+    color: var(--fontclr);
     text-align: right;
 }
 
 .InfoTable tr > td:nth-child(2) {
     background: var(--tableEven);
+    color: var(--fontclr);
 }
 
