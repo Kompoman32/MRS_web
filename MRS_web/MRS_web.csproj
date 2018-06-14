@@ -286,10 +286,10 @@
     <Content Include="Views\Admin\ExtendMeter.cshtml" />
     <Content Include="Views\Admin\DataBase.cshtml" />
     <Content Include="Views\Admin\DeleteMeter.cshtml" />
-    <Content Include="Views\Admin\PartialViews\Add.cshtml" />
     <Content Include="Views\Admin\PartialViews\Tarifes.cshtml" />
     <Content Include="Views\Admin\PartialViews\Documents.cshtml" />
     <Content Include="Views\Admin\AddMeter.cshtml" />
+    <Content Include="Views\DataBase\ParametersList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,33 @@
+﻿@using MRS_web.Models.EDM
+
+@{
+    ViewBag.Title = "Список параметров";
+
+    IEnumerable<Parametr> parameters = ViewData["Parameters"] as IEnumerable<Parametr>;
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        <th>Название</th>
+        <th>Значение</th>
+    </tr>
+    @if (parameters != null)
+    {
+        foreach (var par in parameters)
+        {
+            <tr>
+                <td>@par.Name</td>
+                <td>@par.Measure</td>
+            </tr>
+        }
+    }
+</table>
+
+
+

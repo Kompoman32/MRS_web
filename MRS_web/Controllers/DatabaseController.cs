@@ -70,7 +70,14 @@ namespace MRS_web.Controllers
 
             return View();
         }
-        
+
+        public ActionResult ParametersList()
+        {
+            ViewData["Parameters"] = _DataManager.ParRepo.Parametrs();
+
+            return View();
+        }
+
         public ActionResult Parameters(long MeterId)
         {
             User user = (User)Session["User"];
