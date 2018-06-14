@@ -23,7 +23,7 @@ namespace MRS_web.Controllers
             AdminDictionary.Add("Database", new string[0]);
 
             UserDictionary.Add("User", new string[0]);
-            UserDictionary.Add("Database", new []{"MetersList", "Meter", "Parameters", "Readings", "Documents" });
+            UserDictionary.Add("Database", new []{"MetersList", "Meter", "Parameters", "Readings", "Documents", "UserInfo" });
         }
 
         //логика проверки на валидность

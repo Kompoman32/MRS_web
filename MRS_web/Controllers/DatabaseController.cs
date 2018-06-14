@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 using Microsoft.Ajax.Utilities;
 using MRS_web.Models;
 using MRS_web.Models.EDM;
@@ -49,9 +50,15 @@ namespace MRS_web.Controllers
             return View();
         }
 
-        public ActionResult UserInfo(string UserLogin)
+        public ActionResult UserInfo(string UserLogin="")
         {
-            ViewData["User"] = _DataManager.UserRepo.GetUser(UserLogin);
+            if (UserLogin == null)
+                return View("Error");
+
+            if (!UserLogin.IsNullOrWhiteSpace() && !(Session["User"] as User).AdminPrivileges)
+                return View("Error");
+
+            ViewData["User"] = UserLogin.IsNullOrWhiteSpace()? Session["User"] : _DataManager.UserRepo.GetUser(UserLogin);
 
             return View();
         }

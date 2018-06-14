@@ -28,6 +28,7 @@
                         {
                             if (user.AdminPrivileges)
                             {
+                                <li>@Html.ActionLink("О себе", "UserInfo", "Database")</li>
                                 <li>@Html.ActionLink("База данных", "DataBase", "Admin")</li>
                                 <li>@Html.ActionLink("Добавить счётчик", "AddMeter", "Admin")</li>
                                 <li>@Html.ActionLink("Продлить счётчик", "ExtendMeter", "Admin")</li>
@@ -35,6 +36,7 @@
                             }
                             else
                             {
+                                <li>@Html.ActionLink("О себе", "UserInfo", "Database")</li>
                                 <li>@Html.ActionLink("Список счётчиков", "MetersList", "Database")</li>
                                 <li>@Html.ActionLink("Добавить счётчик", "AddMeter", "User")</li>
                             }

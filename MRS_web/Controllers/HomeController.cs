@@ -81,7 +81,7 @@ namespace MRS_web.Controllers
                 if (user.AdminPrivileges)
                     return RedirectToAction("Index", "Admin");
 
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Index", "User");
             }
             
             return View();
