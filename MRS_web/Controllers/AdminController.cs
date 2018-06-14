@@ -10,7 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Ajax.Utilities;
 using MRS_web.Models.EDM;
-using WebGrease.Css.Extensions;
+using Parametr = MRS_web.Models.EDM.Parametr;
 
 namespace MRS_web.Controllers
 {
@@ -102,11 +102,27 @@ namespace MRS_web.Controllers
         {
             AddMeterInitFields();
 
-            if (CheclFields(User, Name, Description, TypeId, CapacityBefComma, CapacityAftComma, ProductionId, ProductionDate, 
+            if (!CheclFields(User, Name, Description, TypeId, CapacityBefComma, CapacityAftComma, ProductionId, ProductionDate, 
                 ExpirationDate, TariffId,Reading, meterParameters))
-                return HttpNotFound();
+                return View();
+
+            double Capacity = double.Parse((new string('9', (int)CapacityBefComma) + '.' +
+                                            new string('9', (int)CapacityAftComma)).TrimEnd('.'));
+            List<Document> docs = Session["AddMetDocuments"] as List<Document>;
             
-            return View();
+            List<Parametr> parameters = new List<Parametr>();
+            foreach (var parId in meterParameters)
+                parameters.Add(_DataManager.ParRepo.GetParametr(int.Parse(parId)));
+            
+            List<Reading> readings =new List<Reading>();
+            int counter = 1;
+            foreach (var read in Reading)
+                readings.Add(new Reading{TariffNumber= counter++, Value = double.Parse(read)});
+            
+
+            _DataManager.MetRepo.Add(Name,Description,Capacity, (long)ProductionId,(DateTime)ProductionDate,parameters,_DataManager.TarRepo.GetTariff((int)TariffId),_DataManager.TypeRepo.GetType((int)TypeId),docs,_DataManager.UserRepo.GetUser(User), readings);
+            
+            return RedirectToAction("Meter","Database",new {MeterId = ProductionId});
             
         }
 
