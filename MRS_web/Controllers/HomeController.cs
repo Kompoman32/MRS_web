@@ -91,7 +91,8 @@ namespace MRS_web.Controllers
 
         public ActionResult SignUp()
         {
-            return null;
+            
+            return HttpNotFound();
         }
     }
 }
