@@ -70,7 +70,7 @@
 
             $('[name = "metParameter"]').each(function () {
                 if (this.selected) {
-                    $('#stockParameters').append(el);
+                    $('#stockParameters').append(this);
                     this.setAttribute("name", 'stockParameter');
                     this.selected = false;
                 }
@@ -226,16 +226,16 @@
                     <tr>
                         <td>Дата производства</td>
                         <td>
-                            @{var st = (ViewData["ProductionDate"] as DateTime?)?.ToString("yyyy-MM-dd");
-                                <input name="ProductionDate" type="date" value=@st/>
+                            @{var st = ViewData["ProductionDate"]?.ToString();
+                                <input name="ProductionDate" type="date" value=@st >
                                 @Html.ValidationMessage("ProductionDate", new { @class = "text-danger" })}
                         </td>
                     </tr>
                     <tr>
                         <td>Дата следующей проверки</td>
                         <td>
-                            @{var strin = (ViewData["ExpirationDate"] as DateTime?)?.ToString("yyyy-MM-dd");
-                                <input name="ExpirationDate" type="date" value=@strin/>
+                            @{var strin = ViewData["ExpirationDate"]?.ToString();
+                                <input name="ExpirationDate" type="date" value=@strin >
                                 @Html.ValidationMessage("ExpirationDate", new { @class = "text-danger" })}
                         </td>
                     </tr>

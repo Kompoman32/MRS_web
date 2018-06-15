@@ -25,12 +25,14 @@ namespace MRS_web.Controllers
             if (signOut)
             {
                 Session.Remove("User");
-
+                
                 if (aCookie != null)
                 {
-                    aCookie.Expires = DateTime.Now.AddDays(-1);
+                    aCookie.Expires = DateTime.Now.AddDays(-7);
                     Response.Cookies.Add(aCookie);
                 }
+
+                return View();
             }
 
             if (aCookie != null)
@@ -74,7 +76,7 @@ namespace MRS_web.Controllers
                     aCookie.Values["UserLogin"] = user.Login;
                     aCookie.Values["UserPass"] = user.Password;
                     aCookie.Values["LastVisit"] = DateTime.Now.ToString();
-                    aCookie.Expires = DateTime.Now.AddDays(1);
+                    aCookie.Expires = DateTime.Now.AddDays(7);
                     Response.Cookies.Add(aCookie);
                 }
 
@@ -85,6 +87,11 @@ namespace MRS_web.Controllers
             }
             
             return View();
+        }
+
+        public ActionResult SignUp()
+        {
+            return null;
         }
     }
 }

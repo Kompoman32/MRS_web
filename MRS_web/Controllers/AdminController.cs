@@ -92,6 +92,22 @@ namespace MRS_web.Controllers
                 : _DataManager.ParRepo.Parametrs();
         }
 
+        private void ClearSession()
+        {
+            Session.Remove("AddMetUser");
+            Session.Remove("AddMetName");
+            Session.Remove("AddMetDescription");
+            Session.Remove("AddMetCapacityBefComma");
+            Session.Remove("AddMetCapacityAftComma");
+            Session.Remove("AddMetProductionId");
+            Session.Remove("AddMetProductionDate");
+            Session.Remove("AddMetExpirationDate");
+            Session.Remove("AddMetTypeId");
+            Session.Remove("AddMetTariffId");
+            Session.Remove("AddMetReadings");
+            Session.Remove("AddMetParameters");
+        }
+
         [HttpGet]
         public ActionResult AddMeter()
         {
@@ -124,6 +140,8 @@ namespace MRS_web.Controllers
 
             _DataManager.InstMetRepo.Add(Name,Description,Capacity, (long)ProductionId,(DateTime)ProductionDate,(DateTime)ExpirationDate, parameters,_DataManager.TarRepo.GetTariff((int)TariffId),_DataManager.TypeRepo.GetType((int)TypeId),docs,_DataManager.UserRepo.GetUser(User), readings);
             
+            ClearSession();
+
             return RedirectToAction("Meter","Database",new {MeterId = ProductionId});
             
         }
