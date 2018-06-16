@@ -31,6 +31,11 @@ body, h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-family);
 }
 
+.error {
+    color: var(--error);
+    size: 15px;
+}
+
 a {
     color: var(--link)
 }
@@ -39,23 +44,34 @@ a:hover {
     color: var(--linkHov)
 }
 
+.IncludedView a.backButton {
+    display: none
+}
+
 table {
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-table tr th, td {
+table thead tr th{
+    padding: 5px;
+    border: 2px solid var(--border);
+    background: var(--tableHeadBack);
+    color: var(--tableHeadFont);
+}
+
+table tbody tr td {
     border: 2px solid var(--border);
     padding: 5px;
 }
 
-table tr:nth-child(even) {
-    background: var(--tableEven);
-    color: var(--tableOdd)
+table tbody tr:nth-child(even) {
+    background: var(--tableEvenBack);
+    color: var(--tableEvenFont)
 }
-table tr:nth-child(odd) {
-    background: var(--tableOdd);
-    color: var(--tableEven);
+table tbody tr:nth-child(odd) {
+    background: var(--tableOddBack);
+    color: var(--tableOddFont);
 }
 
 table.freeTable tr th,
@@ -76,27 +92,23 @@ td.boolFalse {
     background-position: center center !important;
 }
 
-.IncludedView a.backButton {
-    display: none
-}
-
-.error {
-    color: var(--error);
-    size: 15px;
+table tfoot tr td {
+    background: var(--tableFootBack);
+    color: var(--tableFootFont);
 }
 
 .InfoTable tr > td {
     border: 2px solid var(--border) !important;
 }
 
-.InfoTable  tr > td:nth-child(1) {
-    background: var(--tableOdd);
-    color: var(--fontclr);
+.InfoTable tr > td:nth-child(2n+1) {
+    background: var(--tableOddBack);
+    color: var(--tableOddFont);
     text-align: right;
 }
 
-.InfoTable tr > td:nth-child(2) {
-    background: var(--tableEven);
-    color: var(--fontclr);
+.InfoTable tr > td:nth-child(2n) {
+    background: var(--tableEvenBack);
+    color: var(--tableEvenFont);
 }
 

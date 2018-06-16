@@ -10,6 +10,12 @@
     --error: red;
 
     --border: white;
-    --tableEven: #A69100;
-    --tableOdd: #052D6E;
+    --tableHeadBack: #052D6E;
+    --tableHeadFont: #A69100;
+    --tableEvenBack: #052D6E;
+    --tableEvenFont:  #A69100;
+    --tableOddBack: #A69100;
+    --tableOddFont: #052D6E;
+    --tableFootBack: gray;
+    --tableFootFont: white;
 }
