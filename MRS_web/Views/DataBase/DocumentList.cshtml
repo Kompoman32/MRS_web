@@ -9,6 +9,13 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using (Html.BeginForm("ExportDocuments", "Database"))
+{
+    <div style="padding: 5px">
+        <button type="submit" name="MeterId" value=@ViewData["MeterId"]><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
 <table>
     <thead>
         <tr>
@@ -18,7 +25,7 @@
         </tr>
     </thead>
     @{
-        foreach (Document doc in (IEnumerable<Document>) ViewData["Documents"])
+        foreach (Document doc in (IEnumerable<Document>)ViewData["Documents"])
         {
             <tr>
                 <td>@doc.Title</td>
@@ -27,11 +34,4 @@
             </tr>
         }
     }
-    <tfoot>
-    <tr>
-        <td></td>
-        <td></td>
-        <td><button>Выгрузить в Эксель</button></td>
-    </tr>
-    </tfoot>
 </table>

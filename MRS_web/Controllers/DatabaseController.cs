@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,7 +15,7 @@ namespace MRS_web.Controllers
     [AuthorizeUser]
     public class DatabaseController : Controller
     {
-        DataManager _DataManager;
+        readonly DataManager _DataManager;
 
         public DatabaseController(DataManager dm)
         {
@@ -26,6 +27,9 @@ namespace MRS_web.Controllers
             Response.AppendHeader("Content-Disposition", $"attachment; filename={fileName}");
             Response.TransmitFile(Server.MapPath($"~/Output_Excel/{fileName}"));
             Response.End();
+
+            FileInfo fi = new FileInfo(Server.MapPath($"~/Output_Excel/{fileName}"));
+            fi.Delete();
         }
 
         public ActionResult MetersList(string userLogin="")
@@ -44,9 +48,9 @@ namespace MRS_web.Controllers
             if (((User)Session["User"]).AdminPrivileges && !userLogin.IsNullOrWhiteSpace())
                 list = _DataManager.UserRepo.GetUser(userLogin)?.Meters.ToList();
 
-            string filename = "meterList";
+            string filename = "meterList.xlsx";
 
-            DataManager.ExportToExcel(filename, DataManager.GetDataTables(list));
+            DataManager.ExportToExcel(filename, new []{DataManager.GetDataTable(list)});
 
             ExportResponce(filename);
         }
@@ -59,7 +63,6 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
-            ViewData["MeterName"] = met.Name;
             ViewData["Meter"] = met;
 
             return View();
@@ -72,9 +75,17 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 throw new MemberAccessException();
 
-            string filename = "meter";
+            string filename = "meter.xlsx";
 
-            DataManager.ExportToExcel(filename, DataManager.GetDataTables(new []{met}, met.Documents, met.Readings,met.Parametrs));
+            List<string[,]> toExport = new List<string[,]>
+            {
+                DataManager.GetDataTable(new[] {met}),
+                DataManager.GetDataTable(met.Documents),
+                DataManager.GetDataTable(met.Readings),
+                DataManager.GetDataTable(met.Parametrs)
+            };
+
+            DataManager.ExportToExcel(filename, toExport.ToArray());
 
             ExportResponce(filename);
         }
@@ -87,9 +98,9 @@ namespace MRS_web.Controllers
         }
         public void ExportUserList()
         {
-            string fileName = "userList";
+            string fileName = "userList.xlsx";
 
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(_DataManager.UserRepo.Users())); 
+            DataManager.ExportToExcel(fileName, new []{DataManager.GetDataTable(_DataManager.UserRepo.Users())}); 
             ExportResponce(fileName);
         }
 
@@ -107,20 +118,23 @@ namespace MRS_web.Controllers
         }
         public void ExportUser(string UserLogin = "")
         {
-            if (UserLogin == null)
-                throw new MemberAccessException();
-
             if (!UserLogin.IsNullOrWhiteSpace() && !(Session["User"] as User).AdminPrivileges)
                 throw new MemberAccessException();
 
             User us = UserLogin.IsNullOrWhiteSpace() ? Session["User"] as User : _DataManager.UserRepo.GetUser(UserLogin);
 
-            string fileName = "user";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(new []{us},us?.Meters));
+            List<string[,]> toExport = new List<string[,]>
+            {
+                DataManager.GetDataTable(new[] {us}),
+                DataManager.GetDataTable(us?.Meters)
+            };
+
+            string fileName = "user.xlsx";
+            DataManager.ExportToExcel(fileName, toExport);
             ExportResponce(fileName);
         }
 
-        public ActionResult Tariffes()
+        public ActionResult TariffList()
         {
             ViewData["Tariffes"] = _DataManager.TarRepo.Tariffs();
 
@@ -128,8 +142,8 @@ namespace MRS_web.Controllers
         }
         public void ExportTariffList()
         {
-            string fileName = "tariffList";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(_DataManager.TarRepo.Tariffs()));
+            string fileName = "tariffList.xlsx";
+            DataManager.ExportToExcel(fileName, new[]{DataManager.GetDataTable(_DataManager.TarRepo.Tariffs())});
             ExportResponce(fileName);
         }
 
@@ -147,8 +161,8 @@ namespace MRS_web.Controllers
         {
             Tariff tar = _DataManager.TarRepo.GetTariff(TariffId);
 
-            string fileName = "timespanList";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(new []{tar}));
+            string fileName = "timespanList.xlsx";
+            DataManager.ExportToExcel(fileName, new[]{DataManager.GetDataTable(new []{tar})});
             ExportResponce(fileName);
         }
 
@@ -160,8 +174,8 @@ namespace MRS_web.Controllers
         }
         public void ExportTypesList()
         {
-            string fileName = "typeList";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(_DataManager.TypeRepo.Types()));
+            string fileName = "typeList.xlsx";
+            DataManager.ExportToExcel(fileName, new [] {DataManager.GetDataTable(_DataManager.TypeRepo.Types())});
             ExportResponce(fileName);
         }
 
@@ -173,8 +187,8 @@ namespace MRS_web.Controllers
         }
         public void ExportParameterList()
         {
-            string fileName = "parametrList";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(_DataManager.ParRepo.Parametrs()));
+            string fileName = "parametrList.xlsx";
+            DataManager.ExportToExcel(fileName, new [] {DataManager.GetDataTable(_DataManager.ParRepo.Parametrs())});
             ExportResponce(fileName);
         }
 
@@ -186,21 +200,24 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
+            ViewData["MeterId"] = MeterId;
             ViewData["MeterName"] = met.Name;
             ViewData["Parameters"] = met.Parametrs;
 
             return View();
         }
-        public void ExportParameters(long MeterId)
+        public void ExportParameters(string MeterId)
         {
+            if (!long.TryParse(MeterId, out long  meterId)) return;
+
             User user = (User)Session["User"];
-            Meter met = _DataManager.MetRepo.GetMeter(MeterId);
+            Meter met = _DataManager.MetRepo.GetMeter(meterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 throw new MemberAccessException();
 
-            string fileName = "parameters";
-            DataManager.ExportToExcel(fileName,DataManager.GetDataTables(met.Parametrs));
+            string fileName = "parameters.xlsx";
+            DataManager.ExportToExcel(fileName, new []{DataManager.GetDataTable(met.Parametrs)});
             ExportResponce(fileName);
         }
 
@@ -212,6 +229,7 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
+            ViewData["MeterId"] = MeterId;
             ViewData["MeterName"] = met.Name;
             ViewData["ReadingsUnit"] = met.Type.Unit;
             ViewData["Readings"] = met.Readings;
@@ -226,8 +244,8 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 throw new MemberAccessException();
 
-            string fileName = "readings";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(met.Readings));
+            string fileName = "readings.xlsx";
+            DataManager.ExportToExcel(fileName, new []{DataManager.GetDataTable(met.Readings)});
             ExportResponce(fileName);
         }
 
@@ -239,6 +257,7 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 return View("Error");
 
+            ViewData["MeterId"] = MeterId;
             ViewData["MeterName"] = met.Name;
             ViewData["Documents"] = met.Documents;
 
@@ -252,8 +271,8 @@ namespace MRS_web.Controllers
             if (!user.AdminPrivileges && met.User.Login != user.Login)
                 throw new MemberAccessException();
 
-            string fileName = "documents";
-            DataManager.ExportToExcel(fileName, DataManager.GetDataTables(met.Documents));
+            string fileName = "documents.xlsx";
+            DataManager.ExportToExcel(fileName, new[] {DataManager.GetDataTable(met.Documents)});
             ExportResponce(fileName);
         }
     }

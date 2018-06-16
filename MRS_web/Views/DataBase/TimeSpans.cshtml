@@ -10,6 +10,13 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using (Html.BeginForm("ExportTimeSpanList", "Database"))
+{
+    <div style="padding: 5px">
+        <button type="submit" name="TariffId" value=@ViewData["TariffId"]><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
 <table>
     <thead>
         <tr>
@@ -19,7 +26,7 @@
         </tr>
     </thead>
     @{
-        foreach (TimeSpan ts in (IEnumerable<TimeSpan>) ViewData["TimeSpans"])
+        foreach (TimeSpan ts in (IEnumerable<TimeSpan>)ViewData["TimeSpans"])
         {
             <tr>
                 <td>@ts.Name</td>

@@ -1,7 +1,8 @@
 ﻿@using MRS_web.Models.EDM
 
 @{
-    ViewBag.Title = $"Счётчик \"{ViewData["MeterName"]}\"";
+    Meter met = (Meter)ViewData["Meter"];
+    ViewBag.Title = $"Счётчик \"{met.Name}\"";
 }
 
 <h3>
@@ -10,9 +11,14 @@
 
 <h2>@ViewBag.Title</h2>
 
-@{
-    Meter met = (Meter)ViewData["Meter"];
+@using (Html.BeginForm("ExportMeter", "Database"))
+{
+    <div style="padding: 5px">
+        <button type="submit" name="MeterId" value=@met.ProductionId><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
 
+@{
 <table id="meterTable" class="InfoTable">
     <tr>
         <td>Пользователь</td>

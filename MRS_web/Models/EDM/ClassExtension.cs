@@ -166,13 +166,15 @@ namespace MRS_web.Models.EDM
 
             object[] headers =
             {
-                "Название"
+                "Название", "Количество промежутков", "Промежутки"
             };
 
-            object[,] mas = new object[list.Count(), headers.Length];
+            object[,] mas = new object[list.Count, headers.Length];
             for (int i = 0; i < list.Count(); i++)
             {
                 mas[i, 0] = list[i].Name;
+                mas[i, 1] = list[i].TimeSpans.Count;
+                mas[i, 2] = list[i].TimeSpans;
             }
 
             mas = mas.InsertRowAt(headers, 0);
@@ -187,7 +189,7 @@ namespace MRS_web.Models.EDM
 
         public override string ToString()
         {
-            return $"[{TimeStart.TotalHours}:{TimeStart.TotalMinutes} - {TimeEnd.TotalHours}:{TimeEnd.TotalMinutes}]";
+            return $"[{TimeStart.Hours}:{TimeStart.Minutes} - {TimeEnd.Hours}:{TimeEnd.Minutes}]";
         }
 
         public static string[,] GetDataTableOfTimeSpans(IEnumerable<TimeSpan> collection)

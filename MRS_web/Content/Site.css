@@ -58,11 +58,13 @@ table thead tr th{
     border: 2px solid var(--border);
     background: var(--tableHeadBack);
     color: var(--tableHeadFont);
+    text-align: center
 }
 
 table tbody tr td {
     border: 2px solid var(--border);
     padding: 5px;
+    text-align: center
 }
 
 table tbody tr:nth-child(even) {
@@ -102,13 +104,13 @@ table tfoot tr td {
 }
 
 .InfoTable tr > td:nth-child(2n+1) {
-    background: var(--tableOddBack);
-    color: var(--tableOddFont);
+    background: var(--tableHeadBack);
+    color: var(--tableHeadFont);
     text-align: right;
 }
 
 .InfoTable tr > td:nth-child(2n) {
-    background: var(--tableEvenBack);
-    color: var(--tableEvenFont);
+    background: var(--tableOddBack);
+    color: var(--tableOddFont);
 }
 

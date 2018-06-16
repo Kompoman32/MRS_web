@@ -229,6 +229,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Excel.png" />
     <Content Include="Images\Logo.png" />
     <Content Include="Images\RedCross.png" />
     <Content Include="Images\Sign.png" />
@@ -279,7 +280,7 @@
     <Content Include="Views\Home\SignIn.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\DataBase\DocumentList.cshtml" />
-    <Content Include="Views\DataBase\Tariffes.cshtml" />
+    <Content Include="Views\DataBase\TariffList.cshtml" />
     <Content Include="Views\DataBase\TimeSpans.cshtml" />
     <Content Include="Views\DataBase\TypeList.cshtml" />
     <Content Include="Views\DataBase\UserList.cshtml" />

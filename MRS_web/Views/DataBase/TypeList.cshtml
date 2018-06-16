@@ -10,6 +10,13 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using (Html.BeginForm("ExportTypesList", "Database"))
+{
+    <div style="padding: 5px">
+        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
 <table>
     <thead>
         <tr>
@@ -18,7 +25,7 @@
         </tr>
     </thead>
     @{
-        foreach (Type t in (IEnumerable<Type>) ViewData["Types"])
+        foreach (Type t in (IEnumerable<Type>)ViewData["Types"])
         {
             <tr>
                 <td>@t.Name</td>

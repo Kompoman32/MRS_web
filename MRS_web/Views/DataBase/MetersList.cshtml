@@ -11,6 +11,13 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using (Html.BeginForm("ExportMeterList", "Database"))
+{
+    <div style="padding: 5px">
+        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
 <table>
     <thead>
         <tr>
@@ -22,37 +29,35 @@
             <th>Требуется продление</th>
         </tr>
     </thead>
-    @{
 
-        foreach (Meter met in (IEnumerable<Meter>)ViewData["Meters"])
-        {
-            <tr>
-                <td>@met.User.FullName</td>
-                <td>@met.Name</td>
-                <td>@met.ProductionId</td>
-                <td>@met.ProductionDate.ToString("d")</td>
-                @{
-                    string str = "";
-                    if (met is InstalledMeter)
-                    {
-                        str = (met as InstalledMeter).InstallDate.ToString("d");
-                        <td>@str</td>
-                    }
-                    else
-                    {
-                        <td class="boolTrue"></td>
-                    }
-
-                    str = "bool";
-                    if (met is InstalledMeter)
-                    {
-                        str += ((InstalledMeter)met).ExpirationDate < DateTime.Now;
-                    }
-
-                    <td class=@str></td>
+    @foreach (Meter met in (IEnumerable<Meter>)ViewData["Meters"])
+    {
+        <tr>
+            <td>@met.User.FullName</td>
+            <td>@met.Name</td>
+            <td>@met.ProductionId</td>
+            <td>@met.ProductionDate.ToString("d")</td>
+            @{
+                string str = "";
+                if (met is InstalledMeter)
+                {
+                    str = (met as InstalledMeter).InstallDate.ToString("d");
+                    <td>@str</td>
                 }
-                <td>@Html.ActionLink("Посмотреть...", "Meter", "Database", new { MeterId = met.ProductionId }, null)</td>
-            </tr>
-        }
+                else
+                {
+                    <td class="boolTrue"></td>
+                }
+
+                str = "bool";
+                if (met is InstalledMeter)
+                {
+                    str += ((InstalledMeter)met).ExpirationDate < DateTime.Now;
+                }
+
+                <td class=@str></td>
+            }
+            <td>@Html.ActionLink("Посмотреть...", "Meter", "Database", new { MeterId = met.ProductionId }, null)</td>
+        </tr>
     }
 </table>

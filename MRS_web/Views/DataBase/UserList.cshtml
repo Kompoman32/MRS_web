@@ -9,6 +9,13 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using (Html.BeginForm("ExportUserList", "Database"))
+{
+    <div style="padding: 5px">
+        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
 <table>
     <thead>
         <tr>
@@ -18,7 +25,7 @@
         </tr>
     </thead>
     @{
-        foreach (User t in (IEnumerable<User>) ViewData["Users"])
+        foreach (User t in (IEnumerable<User>)ViewData["Users"])
         {
             <tr>
                 <td>@t.Login</td>
@@ -27,7 +34,7 @@
                     string s = "bool" + t.AdminPrivileges;
                     <td class=@s></td>
                 }
-                <td>@Html.ActionLink("Посмотреть...", "UserInfo", "Database", new {UserLogin = t.Login}, null)</td>
+                <td>@Html.ActionLink("Посмотреть...", "UserInfo", "Database", new { UserLogin = t.Login }, null)</td>
 
             </tr>
         }

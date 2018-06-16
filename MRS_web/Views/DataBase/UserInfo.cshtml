@@ -1,8 +1,8 @@
 ﻿@using MRS_web.Models.EDM
 
 @{
-    User user = ViewData["User"] as User;
-    ViewBag.Title =$"Пользователь \"{user}\"";
+    User user = ViewData["User"] as User??new User();
+    ViewBag.Title = $"Пользователь \"{user}\"";
 }
 
 <h3>
@@ -10,6 +10,14 @@
 </h3>
 
 <h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportUser", "Database"))
+{
+    string us = user?.Login;
+    <div style="padding: 5px">
+        <button type="submit" name="UserLogin" value=@us><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
 
 <table class="InfoTable">
     <tr>
@@ -23,13 +31,20 @@
     <tr>
         <td>Права администратора</td>
         @{
-            string s = $"bool{user.AdminPrivileges}";
-            <td class = @s></td>
+            string s = $"bool{user?.AdminPrivileges}";
+            <td class=@s></td>
         }
     </tr>
     <tr>
-        <td>Счётчикик</td>
-        <td>@Html.ActionLink("Посмотреть...", "MetersList","Database",new { userLogin = user.Login}, null)</td>
+        <td>Счётчики</td>
+        @if (user != null && user.Meters.Any())
+        {
+            <td>@Html.ActionLink("Посмотреть...", "MetersList", "Database", new {userLogin = user?.Login}, null)</td>
+        }
+        else
+        {
+            <td>Отсутствуют</td>
+        }
     </tr>
 </table>
 

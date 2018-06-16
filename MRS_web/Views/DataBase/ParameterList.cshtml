@@ -12,12 +12,19 @@
 
 <h2>@ViewBag.Title</h2>
 
+@using (Html.BeginForm("ExportParameterList", "Database"))
+{
+    <div style="padding: 5px">
+        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
 <table>
     <thead>
-        <tr>
-            <th>Название</th>
-            <th>Значение</th>
-        </tr>
+    <tr>
+        <th>Название</th>
+        <th>Значение</th>
+    </tr>
     </thead>
     @if (parameters != null)
     {
@@ -30,6 +37,5 @@
         }
     }
 </table>
-
 
 
