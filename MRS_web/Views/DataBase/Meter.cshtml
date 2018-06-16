@@ -13,7 +13,7 @@
 @{
     Meter met = (Meter)ViewData["Meter"];
 
-<table id="meterTable" >
+<table id="meterTable" class="InfoTable">
     <tr>
         <td>Пользователь</td>
         <td>@met.User.ToString()</td>
@@ -68,7 +68,7 @@
         <td>
             @if (met.Documents.Count > 0)
             {
-                @Html.ActionLink("Посмотреть...", "Documents", "Database", new { MeterId = met.ProductionId }, null);
+                @Html.ActionLink("Посмотреть...", "DocumentList", "Database", new { MeterId = met.ProductionId }, null);
             }
             else
             {

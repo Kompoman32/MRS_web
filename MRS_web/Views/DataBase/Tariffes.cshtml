@@ -11,14 +11,15 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Название</th>
-        <th>Количество промежутков</th>
-        <th>Промежутки</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Количество промежутков</th>
+            <th>Промежутки</th>
+        </tr>
+    </thead>
     @{
-        foreach (Tariff tar in (IEnumerable<Tariff>)ViewData["Tariffes"])
+        foreach (Tariff tar in (IEnumerable<Tariff>) ViewData["Tariffes"])
         {
             <tr>
                 <td>@tar.Name</td>

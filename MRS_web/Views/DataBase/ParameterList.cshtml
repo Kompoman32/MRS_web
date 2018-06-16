@@ -13,10 +13,12 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Название</th>
-        <th>Значение</th>
-    </tr>
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Значение</th>
+        </tr>
+    </thead>
     @if (parameters != null)
     {
         foreach (var par in parameters)

@@ -11,14 +11,15 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Название</th>
-        <th>Время начала</th>
-        <th>Время окончания</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Время начала</th>
+            <th>Время окончания</th>
+        </tr>
+    </thead>
     @{
-        foreach (TimeSpan ts in (IEnumerable<TimeSpan>)ViewData["TimeSpans"])
+        foreach (TimeSpan ts in (IEnumerable<TimeSpan>) ViewData["TimeSpans"])
         {
             <tr>
                 <td>@ts.Name</td>

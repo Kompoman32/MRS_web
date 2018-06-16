@@ -152,7 +152,7 @@ namespace MRS_web.Controllers
             ExportResponce(fileName);
         }
 
-        public ActionResult Types()
+        public ActionResult TypeList()
         {
             ViewData["Types"] = _DataManager.TypeRepo.Types();
 
@@ -165,7 +165,7 @@ namespace MRS_web.Controllers
             ExportResponce(fileName);
         }
 
-        public ActionResult ParametersList()
+        public ActionResult ParameterList()
         {
             ViewData["Parameters"] = _DataManager.ParRepo.Parametrs();
 
@@ -231,7 +231,7 @@ namespace MRS_web.Controllers
             ExportResponce(fileName);
         }
 
-        public ActionResult Documents(long MeterId)
+        public ActionResult DocumentList(long MeterId)
         {
             User user = (User)Session["User"];
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);

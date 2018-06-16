@@ -10,13 +10,14 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Название</th>
-        <th>Значение</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Значение</th>
+        </tr>
+    </thead>
     @{
-        foreach (Parametr p in (IEnumerable<Parametr>)ViewData["Parameters"])
+        foreach (Parametr p in (IEnumerable<Parametr>) ViewData["Parameters"])
         {
             <tr>
                 <td>@p.Name</td>

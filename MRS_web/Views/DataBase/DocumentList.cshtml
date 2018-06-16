@@ -10,14 +10,15 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Заголовок</th>
-        <th>Дата подписания</th>
-        <th>Текст</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>Дата подписания</th>
+            <th>Текст</th>
+        </tr>
+    </thead>
     @{
-        foreach (Document doc in (IEnumerable<Document>)ViewData["Documents"])
+        foreach (Document doc in (IEnumerable<Document>) ViewData["Documents"])
         {
             <tr>
                 <td>@doc.Title</td>
@@ -26,4 +27,9 @@
             </tr>
         }
     }
+    <tfoot>
+        <tr>
+            <td style="alignment: right"><button>Выгрузить в Эксель</button></td>
+        </tr>
+    </tfoot>
 </table>

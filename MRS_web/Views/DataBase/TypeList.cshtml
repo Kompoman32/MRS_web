@@ -11,13 +11,14 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Название</th>
-        <th>Единица измерения</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Единица измерения</th>
+        </tr>
+    </thead>
     @{
-        foreach (Type t in (IEnumerable<Type>)ViewData["Types"])
+        foreach (Type t in (IEnumerable<Type>) ViewData["Types"])
         {
             <tr>
                 <td>@t.Name</td>

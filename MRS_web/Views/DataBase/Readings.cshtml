@@ -10,13 +10,14 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Номер тарифа</th>
-        <th>Значение</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Номер тарифа</th>
+            <th>Значение</th>
+        </tr>
+    </thead>
     @{
-        foreach (Reading r in (IEnumerable<Reading>)ViewData["Readings"])
+        foreach (Reading r in (IEnumerable<Reading>) ViewData["Readings"])
         {
             <tr>
                 <td>@r.TariffNumber</td>

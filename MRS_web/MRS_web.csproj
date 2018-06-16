@@ -278,10 +278,10 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\SignIn.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\DataBase\Documents.cshtml" />
+    <Content Include="Views\DataBase\DocumentList.cshtml" />
     <Content Include="Views\DataBase\Tariffes.cshtml" />
     <Content Include="Views\DataBase\TimeSpans.cshtml" />
-    <Content Include="Views\DataBase\Types.cshtml" />
+    <Content Include="Views\DataBase\TypeList.cshtml" />
     <Content Include="Views\DataBase\UserList.cshtml" />
     <Content Include="Views\DataBase\Readings.cshtml" />
     <Content Include="Views\DataBase\Parameters.cshtml" />
@@ -293,7 +293,7 @@
     <Content Include="Views\Admin\PartialViews\Tarifes.cshtml" />
     <Content Include="Views\Admin\PartialViews\Documents.cshtml" />
     <Content Include="Views\Admin\AddMeter.cshtml" />
-    <Content Include="Views\DataBase\ParametersList.cshtml" />
+    <Content Include="Views\DataBase\ParameterList.cshtml" />
     <Content Include="Views\DataBase\UserInfo.cshtml" />
     <Content Include="Views\User\AddMeter.cshtml" />
     <Content Include="Views\User\PartialViews\Documents.cshtml" />

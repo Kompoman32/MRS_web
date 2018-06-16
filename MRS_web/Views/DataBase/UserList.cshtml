@@ -10,23 +10,24 @@
 <h2>@ViewBag.Title</h2>
 
 <table>
-    <tr>
-        <th>Логин</th>
-        <th>Полное имя</th>
-        <th>Администратор</th>
-    </tr>
-
+    <thead>
+        <tr>
+            <th>Логин</th>
+            <th>Полное имя</th>
+            <th>Администратор?</th>
+        </tr>
+    </thead>
     @{
-        foreach (User t in (IEnumerable<User>)ViewData["Users"])
+        foreach (User t in (IEnumerable<User>) ViewData["Users"])
         {
             <tr>
                 <td>@t.Login</td>
                 <td>@t.FullName</td>
                 @{
-                    string s = "bool"+ t.AdminPrivileges;
-                    <td class =@s></td>
+                    string s = "bool" + t.AdminPrivileges;
+                    <td class=@s></td>
                 }
-                <td>@Html.ActionLink("Посмотреть...", "UserInfo", "Database", new { UserLogin  = t.Login}, null)</td>
+                <td>@Html.ActionLink("Посмотреть...", "UserInfo", "Database", new {UserLogin = t.Login}, null)</td>
 
             </tr>
         }
