@@ -47,6 +47,15 @@ namespace MRS_web.Models.Repos
             cont.SaveChanges();
         }
 
+        public void AddUser(string login, string password, string fullName, bool adminPriveleges = false)
+        {
+            User user = new User() { Login = login, Password = password, AdminPrivileges = adminPriveleges, FullName = fullName };
+
+            cont.UserSet.Add(user);
+
+            cont.SaveChanges();
+        }
+
         //TODO: добавление удаление edit
     }
 }

@@ -300,6 +300,8 @@
     <Content Include="Views\User\PartialViews\Documents.cshtml" />
     <Content Include="Views\User\PartialViews\Tarifes.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Home\SignUp.cshtml" />
+    <Content Include="Views\DataBase\Constructor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

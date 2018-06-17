@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using MRS_web.Models.EDM;
 
 namespace MRS_web.Controllers
 {
@@ -57,12 +58,12 @@ namespace MRS_web.Controllers
             Models.EDM.User user = _DataManager.UserRepo.GetUser(Login);
 
             if (user == null)
-                ModelState.AddModelError("UserLogin", "Пользователь не найден");
+                ModelState.AddModelError("Login", "Пользователь не найден");
 
             if (!ModelState.IsValid) return View();
 
             if (user?.Password != Password)
-                ModelState.AddModelError("UserPassword", "Пароль введён неверно");
+                ModelState.AddModelError("Password", "Пароль введён неверно");
 
             if (ModelState.IsValid)
             {
@@ -89,10 +90,56 @@ namespace MRS_web.Controllers
             return View();
         }
 
-        public ActionResult SignUp()
+        [HttpPost]
+        public ActionResult SignUp(string Login, string Password, string FullName, string PasswordConfirm)
         {
+            ViewData["Login"] = Login;
+            ViewData["Password"] = Password;
+            ViewData["FullName"] = FullName;
+
+            if (string.IsNullOrEmpty(Password))
+                ModelState.AddModelError("FullName", "Имя не заполнено");
+
+            if (string.IsNullOrEmpty(Login))
+                ModelState.AddModelError("Login", "Логин не заполнен");
+
+            if (string.IsNullOrEmpty(Password))
+                ModelState.AddModelError("Password", "Пароль не заполнен");
+
+            if (!ModelState.IsValid) return View();
+
+
+            if (_DataManager.UserRepo.Users().Any(x=>x.Login==Login))
+                ModelState.AddModelError("Login", "Данный Логин уже занят кем-то другим");
+
+            if (!ModelState.IsValid) return View();
+
+            if (Password != PasswordConfirm)
+                ModelState.AddModelError("PasswordConfirm", "Пароли не совпадают");
+
+            if (!ModelState.IsValid) return View();
+
+            _DataManager.UserRepo.AddUser(Login, Password, FullName);
+
+            User user = _DataManager.UserRepo.GetUser(Login);
+
+            Session["User"] = user;
+
+            HttpCookie aCookie = Request.Cookies["userInfo"];
+
+            aCookie = new HttpCookie("userInfo");
+            aCookie.Values["UserLogin"] = user.Login;
+            aCookie.Values["UserPass"] = user.Password;
+            aCookie.Values["LastVisit"] = DateTime.Now.ToString();
+            aCookie.Expires = DateTime.Now.AddDays(7);
+            Response.Cookies.Add(aCookie);
+                
+            if (user.AdminPrivileges)
+                return RedirectToAction("Index", "Admin");
+
+            return RedirectToAction("Index", "User");
+
             
-            return HttpNotFound();
         }
     }
 }
