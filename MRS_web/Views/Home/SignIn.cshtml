@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Добро пожаловать";
 }
 
 <style>
@@ -7,12 +7,7 @@
         font-size: 20px
     }
 
-    .error {
-        color: #aa0000
-    }
-
     #bSignIn {
-        border-radius: 5px;
         width: 30%;
         font-size: 20px
     }
@@ -31,7 +26,6 @@
             <input name="login" /><br />
             <p class="error">
                 @Html.ValidationMessage("Login")
-                @Html.ValidationMessage("UserLogin")
             </p>
             <br/>
         </div>
@@ -41,7 +35,6 @@
             <input name="password" type="password" /><br />
             <p class="error">
                 @Html.ValidationMessage("Password")
-                @Html.ValidationMessage("UserPassword")
             </p>
             <br />
         </div>
