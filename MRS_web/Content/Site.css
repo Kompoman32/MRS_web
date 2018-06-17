@@ -114,3 +114,22 @@ table tfoot tr td {
     color: var(--tableOddFont);
 }
 
+button {
+    background: var(--butBack);
+    border-radius: 18px;
+    font-family: Arial;
+    color: var(--butClr);
+    font-size: 25px;
+    padding: 8px 20px 10px 20px;
+    text-decoration: none;
+}
+button:hover {
+    background: var(--butBack-Hov);
+    border-radius: 18px;
+    font-family: Arial;
+    color: var(--butClr-Hov);
+    font-size: 25px;
+    padding: 8px 20px 10px 20px;
+    text-decoration: none;
+}
+

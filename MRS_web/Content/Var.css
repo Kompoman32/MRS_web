@@ -18,4 +18,10 @@
     --tableOddFont: #052D6E;
     --tableFootBack: gray;
     --tableFootFont: white;
+
+    --butBack:#0010aa;
+    --butClr:#ffffff;
+    --butBack-Hov:#0040ff;
+    --butClr-Hov:#ffffff;
+
 }
