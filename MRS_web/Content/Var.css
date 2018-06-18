@@ -2,8 +2,8 @@
     --font-size: 16px;
     --font-family: "Comic Sans MS";
 
-    --backclr: teal;
-    --fontclr: orange;
+    --backclr: teal	;
+    --fontclr: orange		;
 
     --link: greenyellow;
     --linkHov: lime;
@@ -19,8 +19,8 @@
     --tableFootBack: gray;
     --tableFootFont: white;
 
-    --butBack:#0010aa;
-    --butClr:#ffffff;
+    --butBack:white;
+    --butClr:black;
     --butBack-Hov:#0040ff;
     --butClr-Hov:#ffffff;
 

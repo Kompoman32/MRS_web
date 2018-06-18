@@ -32,7 +32,8 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 .error {
-    color: var(--error);
+    color: var(--error) !important;
+    font-weight: bolder;
     size: 15px;
 }
 
@@ -120,7 +121,7 @@ button {
     font-family: Arial;
     color: var(--butClr);
     font-size: 25px;
-    padding: 8px 20px 10px 20px;
+    padding: 10px 10px 10px 10px;
     text-decoration: none;
 }
 button:hover {
@@ -129,7 +130,7 @@ button:hover {
     font-family: Arial;
     color: var(--butClr-Hov);
     font-size: 25px;
-    padding: 8px 20px 10px 20px;
+    padding: 10px 10px 10px 10px;
     text-decoration: none;
 }
 
