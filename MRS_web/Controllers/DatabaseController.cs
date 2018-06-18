@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
@@ -31,6 +32,26 @@ namespace MRS_web.Controllers
             FileInfo fi = new FileInfo(Server.MapPath($"~/Output_Excel/{fileName}"));
             fi.Delete();
         }
+
+        public ActionResult Constructor()
+        {
+            return View();
+        }
+
+        public ActionResult ConstructorGetData(string request)
+        {
+            string req=Server.UrlDecode(request);
+            
+            string first =new Regex(@"&.+=[^&]+").Match(req).ToString();
+            string key = first.Substring(1, first.IndexOf('=') - 1);
+            string value = first.Remove(first.IndexOf('=') + 1);
+
+
+            ViewData["Meters"] = _DataManager.MetRepo.Meters().Where(x => x.Name != "3")
+                .Intersect(_DataManager.MetRepo.Meters().Where(x => x.Type.Meters.Count > 2));
+            return PartialView("MetersList");
+        }
+
 
         public ActionResult MetersList(string userLogin="")
         {
@@ -118,6 +139,8 @@ namespace MRS_web.Controllers
         }
         public void ExportUser(string UserLogin = "")
         {
+
+            if ((Session["User"] as User).Login!=UserLogin)
             if (!UserLogin.IsNullOrWhiteSpace() && !(Session["User"] as User).AdminPrivileges)
                 throw new MemberAccessException();
 
