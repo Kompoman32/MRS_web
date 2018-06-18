@@ -208,7 +208,7 @@
                                 <tr>
                                     <td style="alignment: right">после запятой</td>
                                     <td>
-                                        <input name="CapacityAftComma" type="number" min="0" value=@ViewData["CapacityAftComma"]/>
+                                        <input name="CapacityAftComma" type="number" min="0" max="7" value=@ViewData["CapacityAftComma"]/>
                                         @Html.ValidationMessage("CapacityAftComma", new {@class = "text-danger"})
                                     </td>
                                 </tr>

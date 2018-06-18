@@ -90,9 +90,19 @@ namespace MRS_web.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult SignUp()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult SignUp(string Login, string Password, string FullName, string PasswordConfirm)
         {
+            Login=Login.Trim();
+            Password=Password.Trim();
+            FullName=FullName.Trim();
+
             ViewData["Login"] = Login;
             ViewData["Password"] = Password;
             ViewData["FullName"] = FullName;
@@ -109,7 +119,8 @@ namespace MRS_web.Controllers
             if (!ModelState.IsValid) return View();
 
 
-            if (_DataManager.UserRepo.Users().Any(x=>x.Login==Login))
+            if (_DataManager.UserRepo.Users().Any(x=>x.Login==Login) ||
+                _DataManager.UserRepo.Admins().Any(x => x.Login == Login))
                 ModelState.AddModelError("Login", "Данный Логин уже занят кем-то другим");
 
             if (!ModelState.IsValid) return View();

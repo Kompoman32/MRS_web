@@ -23,7 +23,12 @@ namespace MRS_web.Controllers
             AdminDictionary.Add("Database", new string[0]);
 
             UserDictionary.Add("User", new string[0]);
-            UserDictionary.Add("Database", new []{"MetersList", "Meter", "Parameters", "Readings", "Documents", "UserInfo" });
+            UserDictionary.Add("Database",
+                new[]
+                {
+                    "MetersList", "ExportMeterList", "Meter", "ExportMeter", "Parameters", "ExportParameters",
+                    "Readings", "ExportReadings", "DocumentList", "ExportDocuments", "UserInfo", "ExportUser"
+                });
         }
 
         //логика проверки на валидность

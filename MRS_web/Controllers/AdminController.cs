@@ -237,9 +237,9 @@ namespace MRS_web.Controllers
         [HttpGet]
         public ActionResult ExtendMeter()
         {
-            ViewData["UsersList"] = _DataManager.UserRepo.Users();
+            ViewData["UsersList"] = _DataManager.UserRepo.Users().Where(x => x.Meters.Any());
             if (ViewData["SelectedUserLogin"] == null)
-                ViewData["SelectedUserLogin"] = _DataManager.UserRepo.Users().First().Login;
+                ViewData["SelectedUserLogin"] = _DataManager.UserRepo.Users().First(x=>x.Meters.Count>0).Login;
 
             ViewData["MetersList"] = _DataManager.UserRepo.GetUser(ViewData["SelectedUserLogin"].ToString()).Meters;
 
@@ -314,7 +314,7 @@ namespace MRS_web.Controllers
         [HttpGet]
         public ActionResult DeleteMeter()
         {
-            ViewData["UsersList"] = _DataManager.UserRepo.Users();
+            ViewData["UsersList"] = _DataManager.UserRepo.Users().Where(x => x.Meters.Any());
             if (ViewData["SelectedUserLogin"] == null)
                 ViewData["SelectedUserLogin"] = _DataManager.UserRepo.Users().First().Login;
 
