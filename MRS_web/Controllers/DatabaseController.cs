@@ -41,14 +41,28 @@ namespace MRS_web.Controllers
         public ActionResult ConstructorGetData(string request)
         {
             string req=Server.UrlDecode(request);
-            
-            string first =new Regex(@"&.+=[^&]+").Match(req).ToString();
-            string key = first.Substring(1, first.IndexOf('=') - 1);
-            string value = first.Remove(first.IndexOf('=') + 1);
+            //req = "&start=(&start=(&Entity=Счётчик&Collection=Показания&Sign=Количество <&input=5&Or=ИЛИ&Entity=Счётчик&Entity=Пользователь&Bool=Администратор?&Sign===&input=False";
 
+            IEnumerable<IConstructor> collection;
+            string msg = "";
+            try
+            {
+                collection = RequestConstructor.GiveCollection(_DataManager, req);
+            }
+            catch (NullReferenceException e)
+            {
+                msg = "Ничего не найдено";
+            }
+            catch (ArgumentNullException e)
+            {
+                msg = "Ничего не найдено";
+            }
+            catch (Exception e)
+            {
+                msg = "Ошибка в запросе, проверьте все типы введённых данных";
+            }
 
-            ViewData["Meters"] = _DataManager.MetRepo.Meters().Where(x => x.Name != "3")
-                .Intersect(_DataManager.MetRepo.Meters().Where(x => x.Type.Meters.Count > 2));
+            //todo выбрать partial view
             return PartialView("MetersList");
         }
 

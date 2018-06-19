@@ -4,7 +4,9 @@ using MainLib;
 
 namespace MRS_web.Models.EDM
 {
-    public partial class Document
+    public interface IConstructor { }
+
+    public partial class Document: IConstructor
     {
         public enum Fields { Title, Discription, SigningDate, Meter}
 
@@ -38,7 +40,7 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class Meter
+    public partial class Meter : IConstructor
     {
         public enum Fields { Name, Discription, SumReadings, Capacity, ProductionId, ProductionDate, Parametrs, Tariff, Type, Documents, User, Readings}
 
@@ -79,12 +81,12 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class InstalledMeter
+    public partial class InstalledMeter : IConstructor
     {
         public new enum Fields { InstallDate, ExpirationDate}
     }
 
-    public partial class Parametr
+    public partial class Parametr : IConstructor
     {
         public enum Fields { Name, Measure, Meters}
 
@@ -116,7 +118,7 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class Reading
+    public partial class Reading : IConstructor
     {
         public enum Fields { Value, TariffNumber, Meter}
 
@@ -150,7 +152,7 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class Tariff
+    public partial class Tariff : IConstructor
     {
         public enum Fields { Name, Meters, TimeSpans}
 
@@ -183,7 +185,7 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class TimeSpan
+    public partial class TimeSpan : IConstructor
     {
         public enum Fields { Name, TimeStart, TimeEnd, Tariff}
 
@@ -216,7 +218,7 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class Type
+    public partial class Type : IConstructor
     {
         public enum Fields { Name, Unit, Meters}
 
@@ -248,7 +250,7 @@ namespace MRS_web.Models.EDM
         }
     }
 
-    public partial class User
+    public partial class User : IConstructor
     {
         public enum Fields { Login, Password, FullName, AdminPrivileges, Maters}
 
