@@ -32,8 +32,16 @@
 
             $('#blob').attr('value', str);;
 
-            $('#Results').load('@Url.Action("ConstructorGetData")?request=' + str);
+            $('#Results').load('@Url.Action("ConstructorGetData")?request=' + encodeURIComponent(str), null, function (data, suc) {
+                if (!suc || data[1] === '!')
+                    $('#excelButton').css('display', 'none');
+                else {
+                    $('#excelButton').attr('value', str);
+                    $('#excelButton').css('display', 'block');
+                }
+            });
 
+            //'<button><img width=30 height=30 src="/Images/Excel.png"></button>');
         });
     });
 
@@ -144,15 +152,13 @@
         var div3 = $('<div/>');
         logic.on('change', function () {
 
-            if (this.value == "") {
+            if (this.value === "") {
                 logic.attr('name', '');
                 div3.empty();
                 return;
             }
 
-            if (this.value == ' И ')
-                logic.attr('name', 'And');
-            else logic.attr('name', 'Or');
+            logic.attr('name', 'Logic');
 
             if (div3[0].children.length > 0) { return; }
 
@@ -409,24 +415,24 @@
         padding: 5px;
     }
 
-    #Expression div,
-    #Expression div div,
-    #Expression div div div,
-    #Expression div div div div,
-    #Expression div div div div div {
-        padding: 0;
-        margin-left: 5px;
-        margin-right: 5px;
-        display: flex;
-        justify-content: left;
-        text-align: center;
-        flex-wrap: wrap;
-    }
+        #Expression div,
+        #Expression div div,
+        #Expression div div div,
+        #Expression div div div div,
+        #Expression div div div div div {
+            padding: 0;
+            margin-left: 5px;
+            margin-right: 5px;
+            display: flex;
+            justify-content: left;
+            text-align: center;
+            flex-wrap: wrap;
+        }
 
-    #Expression select,
-    #Expression input {
-        height: 40px;
-    }
+        #Expression select,
+        #Expression input {
+            height: 40px;
+        }
 
     #Entities div {
         height: auto;
@@ -481,29 +487,10 @@
 
 
 <h2>@ViewBag.Title</h2>
-<input id="blob" />
-<button id="but">LOL</button>
+<input id="blob" style="display: none" />
 
 <table class="freeTable">
     <tr>
-        <td>
-            <p>
-                Выберите сущность:
-                <select tag="Sel" id="Entity">
-                    <option></option>
-                    <option value="Meter">Счётчик</option>
-                    <option value="InstalledMeter">Уст. счётчик</option>
-                    <option value="User">Пользователь</option>
-                    <option value="Type">Тип</option>
-                    <option value="Reading">Показатель</option>
-                    <option value="Parametr">Параметр</option>
-                    <option value="Tariff">Тариф</option>
-                    <option value="TimeSpan">Врем. промежуток</option>
-                    <option value="Document">Документ</option>
-                </select>
-            </p>
-            <br />
-        </td>
         <td id="Entities" style="display: flex;  flex-flow: wrap">
             <div>
                 <h3>Счётчик</h3>
@@ -515,10 +502,10 @@
                     <li tag="integer">Заводской номер</li>
                     <li tag="date">Дата производства</li>
                     <li tag="coll">Параметры</li>
-                    @*<li tag="entity" name="Tariff">Тариф</li>*@
-                    @*<li tag="entity" name="Type">Тип</li>*@
+                    <li tag="entity" name="Tariff">Тариф</li>
+                    <li tag="entity" name="Type">Тип</li>
                     <li tag="coll">Документы</li>
-                    @*<li tag="entity" name="User">Пользователь</li>*@
+                    <li tag="entity" name="User">Пользователь</li>
                     <li tag="coll">Показания</li>
                 </ul>
             </div>
@@ -527,7 +514,6 @@
                 <ul id="InstalledMeter">
                     <li tag="date">Дата установки</li>
                     <li tag="date">Дата проверки</li>
-                    <li tag="coll">Врем. промежутки</li>
                 </ul>
             </div>
             <div>
@@ -552,7 +538,7 @@
                 <ul id="Reading">
                     <li tag="float">Значение</li>
                     <li tag="integer">Номер тарифа</li>
-                    @*<li tag="entity" name="Meter">Счётчик</li>*@
+                    <li tag="entity" name="Meter">Счётчик</li>
                 </ul>
             </div>
             <div>
@@ -577,7 +563,7 @@
                     <li tag="string">Название</li>
                     <li tag="time">Время начала</li>
                     <li tag="time">Время окончания</li>
-                    @*<li tag="entity" name="Tariff">Тариф</li>*@
+                    <li tag="entity" name="Tariff">Тариф</li>
                 </ul>
             </div>
             <div>
@@ -586,7 +572,7 @@
                     <li tag="string">Заголовок</li>
                     <li tag="string">Описание</li>
                     <li tag="date">Дата подписания</li>
-                    @*<li tag="entity" name="Meter">Счётчик</li>*@
+                    <li tag="entity" name="Meter">Счётчик</li>
                 </ul>
             </div>
         </td>
@@ -600,7 +586,7 @@
                     <li tag="date">Дата</li>
                     <li tag="bool">Логич. переменная</li>
                     <li tag="time">Время</li>
-                    @*<li tag="entity">Сущность</li>*@
+                    <li tag="entity">Сущность</li>
                     <li tag="coll">Коллекция</li>
                 </ul>
             </div>
@@ -608,6 +594,28 @@
     </tr>
 </table>
 
-<div id="Expression" style="display: flex; flex-flow: wrap; background: white; color:black"></div>
+<div style="margin: 10px">
+    Выберите сущность:
+    <select tag="Sel" id="Entity">
+        <option></option>
+        <option value="Meter">Счётчик</option>
+        <option value="InstalledMeter">Уст. счётчик</option>
+        <option value="User">Пользователь</option>
+        <option value="Type">Тип</option>
+        <option value="Reading">Показатель</option>
+        <option value="Parametr">Параметр</option>
+        <option value="Tariff">Тариф</option>
+        <option value="TimeSpan">Врем. промежуток</option>
+        <option value="Document">Документ</option>
+    </select>
+    <br />
+</div>
 
-<div id="Results"></div>
+<button id="but">Найти</button>
+
+<div id="Expression" style="display: flex; flex-flow: wrap; background: white; color: black"></div>
+@using (Html.BeginForm("ConstructorToExcel", "Database"))
+{
+    <button id="excelButton" type="submit" name="request"  style="margin: 5px; display: none"><img width=30 height=30 src="/Images/Excel.png"></button>
+}
+<div class="IncludedView" id="Results"></div>

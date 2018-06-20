@@ -25,7 +25,9 @@ namespace MRS_web.Controllers
             
             if (signOut)
             {
-                Session.Remove("User");
+                Session.Remove("UserLogin");
+                Session.Remove("UserAdmin");
+                Session.Remove("UserFullName");
                 
                 if (aCookie != null)
                 {
@@ -67,15 +69,17 @@ namespace MRS_web.Controllers
 
             if (ModelState.IsValid)
             {
-                Session["User"] = user;
+                Session["UserLogin"] = Login;
+                Session["UserAdmin"] = user.AdminPrivileges.ToString().ToLower();
+                Session["UserFullName"] = user.FullName;
 
                 HttpCookie aCookie = Request.Cookies["userInfo"];
 
-                if ((aCookie == null || aCookie.Expires < DateTime.Now) && Save)
+                if (aCookie == null && Save)
                 {
                     aCookie = new HttpCookie("userInfo");
-                    aCookie.Values["UserLogin"] = user.Login;
-                    aCookie.Values["UserPass"] = user.Password;
+                    aCookie.Values["UserLogin"] = Login;
+                    aCookie.Values["UserPass"] = Password;
                     aCookie.Values["LastVisit"] = DateTime.Now.ToString();
                     aCookie.Expires = DateTime.Now.AddDays(7);
                     Response.Cookies.Add(aCookie);
@@ -134,11 +138,9 @@ namespace MRS_web.Controllers
 
             User user = _DataManager.UserRepo.GetUser(Login);
 
-            Session["User"] = user;
+            Session["User"] = Login;
 
-            HttpCookie aCookie = Request.Cookies["userInfo"];
-
-            aCookie = new HttpCookie("userInfo");
+            HttpCookie aCookie = new HttpCookie("userInfo");
             aCookie.Values["UserLogin"] = user.Login;
             aCookie.Values["UserPass"] = user.Password;
             aCookie.Values["LastVisit"] = DateTime.Now.ToString();

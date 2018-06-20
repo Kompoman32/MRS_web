@@ -37,11 +37,9 @@ namespace MRS_web.Controllers
             string controller = httpContext.Request.RequestContext.RouteData.Values["controller"].ToString();
             string action = httpContext.Request.RequestContext.RouteData.Values["action"].ToString();
 
-            User user = httpContext.Session["User"] as User;
-
-            if (user == null) return false;
-
-            Dictionary<string, string[]> dict = user.AdminPrivileges ? AdminDictionary : UserDictionary;
+            if (httpContext.Session["UserLogin"] == null) return false;
+            
+            Dictionary<string, string[]> dict = new DataManager().UserRepo.GetUser(httpContext.Session["UserLogin"].ToString()).AdminPrivileges ? AdminDictionary : UserDictionary;
 
             return dict.ContainsKey(controller) 
                    && (!dict[controller].Any() || dict[controller].Contains(action));

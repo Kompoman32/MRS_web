@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using MainLib;
 using MRS_web.Models.EDM;
+using Type = MRS_web.Models.EDM.Type;
+using TimeSpan = MRS_web.Models.EDM.TimeSpan;
 using MRS_web.Models.Repos;
 
 namespace MRS_web.Models
@@ -52,28 +54,29 @@ namespace MRS_web.Models
 
         public static string[,] GetDataTable<T>(IEnumerable<T> collection)
         {
-            if (!collection.Any()) return new string[0,0];
+            if (collection == null || !collection.Any()) return new string[0,0];
             
-            string[,] output = null;
-            var @switch = new Dictionary<System.Type, Action>()
-            {
-                {typeof(Meter), () => output = Meter.GetDataTableOfMeters(collection.Cast<Meter>())},
-                {typeof(Document), () => output = Document.GetDataTableOfDocuments(collection.Cast<Document>())},
-                {typeof(Parametr), () => output = Parametr.GetDataTableOfParametrs(collection.Cast<Parametr>())},
-                {typeof(Reading), () => output = Reading.GetDataTableOfReadings(collection.Cast<Reading>())},
-                {typeof(Tariff), () => output = Tariff.GetDataTableOfTariffs(collection.Cast<Tariff>())},
-                {
-                    typeof(EDM.TimeSpan),
-                    () => output = EDM.TimeSpan.GetDataTableOfTimeSpans(collection.Cast<EDM.TimeSpan>())
-                },
-                {typeof(EDM.Type), () => output = EDM.Type.GetDataTableOfTypes(collection.Cast<EDM.Type>())},
-                {typeof(User), () => output = User.GetDataTableOfUsers(collection.Cast<User>())},
-                {typeof(object), () => output = new string[0,0] }
-            };
+            var first = collection.First();
 
-            @switch[typeof(T)]();
+            return
+                first is Meter
+                    ? Meter.GetDataTableOfMeters(collection.Cast<Meter>())
+                    : first is Document
+                        ? Document.GetDataTableOfDocuments(collection.Cast<Document>())
+                        : first is Parametr
+                            ? Parametr.GetDataTableOfParametrs(collection.Cast<Parametr>())
+                            : first is Reading
+                                ? Reading.GetDataTableOfReadings(collection.Cast<Reading>())
+                                : first is Tariff
+                                    ? Tariff.GetDataTableOfTariffs(collection.Cast<Tariff>())
+                                    : first is TimeSpan
+                                        ? TimeSpan.GetDataTableOfTimeSpans(collection.Cast<TimeSpan>())
+                                        : first is Type
+                                            ? Type.GetDataTableOfTypes(collection.Cast<Type>())
+                                            : first is User
+                                                ? User.GetDataTableOfUsers(collection.Cast<User>())
+                                                : new string[0, 0];
 
-           return output;
         }
 
         public static void ExportToExcel(string fileName, IEnumerable<string[,]> toExport)

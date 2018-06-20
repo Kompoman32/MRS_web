@@ -167,14 +167,14 @@
                         <td>Название</td>
                         <td>
                             <input name="Name" value=@ViewData["Name"] />
-                            @Html.ValidationMessage("Name", new { @class = "text-danger" })
+                            @Html.ValidationMessage("Name", new { @class = "error" })
                         </td>
                     </tr>
                     <tr>
                         <td>Описание</td>
                         <td>
                             <input name="Description" value=@ViewData["Description"] />
-                            @Html.ValidationMessage("Description", new { @class = "text-danger" })
+                            @Html.ValidationMessage("Description", new { @class = "error" })
                         </td>
                     </tr>
                     <tr>
@@ -202,14 +202,14 @@
                                     <td style="alignment: right">до запятой</td>
                                     <td>
                                         <input name="CapacityBefComma" type="number" min="1" max="7" value=@ViewData["CapacityBefComma"] />
-                                        @Html.ValidationMessage("CapacityBefComma", new {@class = "text-danger"})
+                                        @Html.ValidationMessage("CapacityBefComma", new {@class = "error"})
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="alignment: right">после запятой</td>
                                     <td>
                                         <input name="CapacityAftComma" type="number" min="0" max="7" value=@ViewData["CapacityAftComma"]/>
-                                        @Html.ValidationMessage("CapacityAftComma", new {@class = "text-danger"})
+                                        @Html.ValidationMessage("CapacityAftComma", new {@class = "error"})
                                     </td>
                                 </tr>
                             </table>
@@ -220,7 +220,7 @@
                         <td>Заводской номер</td>
                         <td>
                             <input name="ProductionId" type="number" min="0" max=@long.MaxValue value=@ViewData["ProductionId"] />
-                            @Html.ValidationMessage("ProductionId", new { @class = "text-danger" })
+                            @Html.ValidationMessage("ProductionId", new { @class = "error" })
                         </td>
                     </tr>
                     <tr>
@@ -228,7 +228,7 @@
                         <td>
                             @{var st = ViewData["ProductionDate"]?.ToString();
                                 <input name="ProductionDate" type="date" value=@st >
-                                @Html.ValidationMessage("ProductionDate", new { @class = "text-danger" })}
+                                @Html.ValidationMessage("ProductionDate", new { @class = "error" })}
                         </td>
                     </tr>
                     <tr>
@@ -236,7 +236,7 @@
                         <td>
                             @{var strin = ViewData["ExpirationDate"]?.ToString();
                                 <input name="ExpirationDate" type="date" value=@strin >
-                                @Html.ValidationMessage("ExpirationDate", new { @class = "text-danger" })}
+                                @Html.ValidationMessage("ExpirationDate", new { @class = "error" })}
                         </td>
                     </tr>
                 </table>
@@ -264,7 +264,7 @@
                                 @{
                                     var stri = readings?.First();
                                     <input name="Reading" type="number" step="any" min="0" max=@double.MaxValue value=@stri />}
-                                    @Html.ValidationMessage("Reading0", new { @class = "text-danger" })
+                                    @Html.ValidationMessage("Reading0", new { @class = "error" })
                                 </td>
                             </tr>
                         </table>

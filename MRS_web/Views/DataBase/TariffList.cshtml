@@ -15,7 +15,7 @@
 @using (Html.BeginForm("ExportTariffList", "Database"))
 {
     <div style="padding: 5px">
-        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
     </div>
 }
 
@@ -25,6 +25,7 @@
             <th>Название</th>
             <th>Количество промежутков</th>
             <th>Промежутки</th>
+            <th>Количество счётчиков</th>
         </tr>
     </thead>
     @{
@@ -42,6 +43,7 @@
 
                     <td>@s</td>
                 }
+                <td>@tar.Meters.Count</td>
             </tr>
         }
     }

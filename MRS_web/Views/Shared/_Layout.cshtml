@@ -1,7 +1,4 @@
 ﻿@using MRS_web.Models.EDM
-@{
-    User user = Session["User"] as MRS_web.Models.EDM.User;
-}
 
 <!DOCTYPE html>
 <html>
@@ -24,9 +21,9 @@
             <div class="navbar-collapse collapse">
                 <ul id="nav-list" class="nav navbar-nav">
                     @{
-                        if (Session["User"] is MRS_web.Models.EDM.User)
+                        if (Session["UserLogin"] != null)
                         {
-                            if (user.AdminPrivileges)
+                            if (Session["UserAdmin"].ToString() == "true")
                             {
                                 <li>@Html.ActionLink("О себе", "UserInfo", "Database")</li>
                                 <li>@Html.ActionLink("База данных", "DataBase", "Admin")</li>
@@ -43,6 +40,11 @@
 
                             <li>@Html.ActionLink("Выйти", "SignIn", "Home", new { signOut = true }, null)</li>
                         }
+                        else
+                        {
+                            <li>@Html.ActionLink("Войти", "SignIn", "Home")</li>
+                            <li>@Html.ActionLink("Зарегестрироваться", "SignUp", "Home")</li>
+                        }
                     }
                 </ul>
             </div>
@@ -52,14 +54,14 @@
 @RenderBody()
     
 <div class="container body-content">
-    <hr/>
+    <hr style="color:white"/>
         @{
-            if (user != null)
+            if (Session["UserLogin"] != null)
             {
                 string s = "Вы вошли как: ";
-                s += user.AdminPrivileges ? "Администратор - " : "Пользователь - ";
-                s += user.FullName;
-                <div style="color: greenyellow; font-size: 40px;">
+                s += Session["UserAdmin"].ToString() == "true" ? "Администратор - " : "Пользователь - ";
+                s += Session["UserFullName"];
+                <div style="color: var(--link); font-size: 40px;">
                     @s
                 </div>
             }

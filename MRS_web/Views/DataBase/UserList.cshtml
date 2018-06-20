@@ -12,7 +12,7 @@
 @using (Html.BeginForm("ExportUserList", "Database"))
 {
     <div style="padding: 5px">
-        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
     </div>
 }
 
@@ -22,6 +22,7 @@
             <th>Логин</th>
             <th>Полное имя</th>
             <th>Администратор?</th>
+            <th>Количество счётчиков</th>
         </tr>
     </thead>
     @{
@@ -34,6 +35,7 @@
                     string s = "bool" + t.AdminPrivileges;
                     <td class=@s></td>
                 }
+                <td>@t.Meters.Count</td>
                 <td>@Html.ActionLink("Посмотреть...", "UserInfo", "Database", new { UserLogin = t.Login }, null)</td>
 
             </tr>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
+using Microsoft.Ajax.Utilities;
 using MRS_web.Models;
 using MRS_web.Models.EDM;
 using TimeSpan = MRS_web.Models.EDM.TimeSpan;
@@ -12,6 +14,7 @@ namespace MRS_web.Models
 {
     class RequestConstructor
     {
+        // поля
         /*          СЧётчик
                 
                     string = Название
@@ -21,10 +24,10 @@ namespace MRS_web.Models
                     Integer = Заводской номер
                     date = Дата производства
                     coll = Параметры
-                    entity" name="Tariff = Тариф        //TODO
-                    entity" name="string = Тип          //TODO
+                    entity" name="Tariff = Тариф        
+                    entity" name="string = Тип          
                     coll = Документы
-                    entity" name="User = Пользователь   //TODO
+                    entity" name="User = Пользователь   
                     coll = Показания
                 
             
@@ -58,7 +61,7 @@ namespace MRS_web.Models
                 
                     Float = Значение
                     Integer = Номер тарифа
-                    entity" name="Meter = Счётчик //TODO
+                    entity" name="Meter = Счётчик
                 
             
             
@@ -83,7 +86,7 @@ namespace MRS_web.Models
                     string = Название
                     time = Время начала
                     time = Время окончания
-                    entity" name="Tariff = Тариф //TODO
+                    entity" name="Tariff = Тариф
                 
             
             
@@ -92,13 +95,12 @@ namespace MRS_web.Models
                     string = Заголовок
                     string = Описание
                     date = Дата подписания
-                    entity" name="Meter = Счётчик //TODO
+                    entity" name="Meter = Счётчик
                
          */
-        //TODO ненавижу тип entity
 
         /*Счётчик*/
-         static Dictionary<string, Dictionary<string, Func<Meter, string, bool>>> MeterDict =
+        private static Dictionary<string, Dictionary<string, Func<Meter, string, bool>>> MeterDict =
             new Dictionary<string, Dictionary<string, Func<Meter, string, bool>>>
             {
                 {
@@ -140,12 +142,12 @@ namespace MRS_web.Models
                 {
                     "Заводской номер", new Dictionary<string, Func<Meter, string, bool>>
                     {
-                        {"==", (t, inp) => t.Capacity.Equals(int.Parse(inp))},
-                        {"!=", (t, inp) => !t.Capacity.Equals(int.Parse(inp))},
-                        {">", (t, inp) => t.Capacity > int.Parse(inp)},
-                        {"<", (t, inp) => t.Capacity < int.Parse(inp)},
-                        {">=", (t, inp) => t.Capacity >= int.Parse(inp)},
-                        {"<=", (t, inp) => t.Capacity <= int.Parse(inp)}
+                        {"==", (t, inp) => t.ProductionId.Equals(int.Parse(inp))},
+                        {"!=", (t, inp) => !t.ProductionId.Equals(int.Parse(inp))},
+                        {">", (t, inp) => t.ProductionId > int.Parse(inp)},
+                        {"<", (t, inp) => t.ProductionId < int.Parse(inp)},
+                        {">=", (t, inp) => t.ProductionId >= int.Parse(inp)},
+                        {"<=", (t, inp) => t.ProductionId <= int.Parse(inp)}
                     }
                 },
                 {
@@ -171,179 +173,55 @@ namespace MRS_web.Models
                     }
                 },
                 // inp содержит весь путь до поля сущности без первого Entity и первого поля, пример (в классе Meter):  Name.Value
-                /*{
+                // Entity
+                {
                     "Тариф", new Dictionary<string, Func<Meter, string, bool>>
                     {
                         {
-                            "==", (t, inp) =>
-                            {
-                                string value = inp.Substring(inp.IndexOf('.') + 1);
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Name":
-                                        return t.Tariff.Name.Equals(value);
-                                    case "TimeSpans":
-                                        return t.Tariff.TimeSpans.Count.Equals(int.Parse(value));
-                                    case "Meters":
-                                        return t.Tariff.Meters.Count.Equals(int.Parse(value));
-                                    default: return false;
-                                }
-                            }
+                            "==", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["=="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "!=", (t, inp) =>
-                            {
-                                string value = inp.Substring(inp.IndexOf('.') + 1);
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Name":
-                                        return !t.Tariff.Name.Equals(value);
-                                    case "TimeSpans":
-                                        return !t.Tariff.TimeSpans.Count.Equals(int.Parse(value));
-                                    case "Meters":
-                                        return !t.Tariff.Meters.Count.Equals(int.Parse(value));
-                                    default: return false;
-                                }
-                            }
+                            "!=", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["!="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            ">", (t, inp) =>
-                            {
-                                string value = inp.Substring(inp.IndexOf('.') + 1);
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "TimeSpans":
-                                        return t.Tariff.TimeSpans.Count > int.Parse(value);
-                                    case "Meters":
-                                        return t.Tariff.Meters.Count > int.Parse(value);
-                                    default: return false;
-                                }
-                            }
+                            ">", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))][">"](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "<", (t, inp) =>
-                            {
-                                string value = inp.Substring(inp.IndexOf('.') + 1);
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "TimeSpans":
-                                        return t.Tariff.TimeSpans.Count < int.Parse(value);
-                                    case "Meters":
-                                        return t.Tariff.Meters.Count < int.Parse(value);
-                                    default: return false;
-                                }
-                            }
+                            "<", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["<"](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            ">=", (t, inp) =>
-                            {
-                                string value = inp.Substring(inp.IndexOf('.') + 1);
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "TimeSpans":
-                                        return t.Tariff.TimeSpans.Count >= int.Parse(value);
-                                    case "Meters":
-                                        return t.Tariff.Meters.Count >= int.Parse(value);
-                                    default: return false;
-                                }
-                            }
+                            ">=", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))][">="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "<=", (t, inp) =>
-                            {
-                                string value = inp.Substring(inp.IndexOf('.') + 1);
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "TimeSpans":
-                                        return t.Tariff.TimeSpans.Count <= int.Parse(value);
-                                    case "Meters":
-                                        return t.Tariff.Meters.Count <= int.Parse(value);
-                                    default: return false;
-                                }
-                            }
-                        }
+                            "<=", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["<="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+
                     }
-                },*/
-                // input содержит весь путь до поля сущности без первого Entity, пример (в классе Meter):  Type.Name
-                /*{
+                },
+                // Entity
+                {
                     "Тип", new Dictionary<string, Func<Meter, string, bool>>
                     {
                         {
-                            "==", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Name":
-                                        return t.Type.Equals(inp);
-                                    case "Unit":
-                                        return t.Type.Unit.Equals(int.Parse(inp));
-                                    case "Meters":
-                                        return t.Type.Meters.Count.Equals(int.Parse(inp));
-                                    default: return false;
-                                }
-                            }
+                            "==", (t, inp) => TypeDict[inp.Remove(inp.IndexOf('\t'))]["=="](t.Type,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "!=", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Name":
-                                        return !t.Type.Equals(inp);
-                                    case "Unit":
-                                        return !t.Type.Unit.Equals(int.Parse(inp));
-                                    case "Meters":
-                                        return !t.Type.Meters.Count.Equals(int.Parse(inp));
-                                    default: return false;
-                                }
-                            }
+                            "!=", (t, inp) => TypeDict[inp.Remove(inp.IndexOf('\t'))]["!="](t.Type,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            ">", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.Type.Meters.Count > int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
+                            ">", (t, inp) => TypeDict[inp.Remove(inp.IndexOf('\t'))][">"](t.Type,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "<", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.Type.Meters.Count < int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
+                            "<", (t, inp) => TypeDict[inp.Remove(inp.IndexOf('\t'))]["<"](t.Type,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            ">=", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.Type.Meters.Count >= int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
+                            ">=", (t, inp) => TypeDict[inp.Remove(inp.IndexOf('\t'))][">="](t.Type,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "<=", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.Type.Meters.Count <= int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
-                        }
+                            "<=", (t, inp) => TypeDict[inp.Remove(inp.IndexOf('\t'))]["<="](t.Type,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
                     }
-                },*/
+                },
                 {
                     "Документы", new Dictionary<string, Func<Meter, string, bool>>
                     {
@@ -355,92 +233,31 @@ namespace MRS_web.Models
                         {"<=", (t, inp) => t.Documents.Count <= int.Parse(inp)}
                     }
                 },
-                // input содержит весь путь до поля сущности без первого Entity, пример (в классе Meter):  User.Login
+                // Entity
                 {
                     "Пользователь", new Dictionary<string, Func<Meter, string, bool>>
                     {
                         {
-                            "==", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "FullName":
-                                        return t.User.FullName.Equals(inp);
-                                    case "Unit":
-                                        return t.User.Login.Equals(inp);
-                                    case "AdminPrivileges":
-                                        return t.User.AdminPrivileges.Equals(bool.Parse(inp));
-                                    case "Meters":
-                                        return t.User.Meters.Count.Equals(int.Parse(inp));
-                                    default: return false;
-                                }
-                            }
+                            "==", (t, inp) => UserDict[inp.Remove(inp.IndexOf('\t'))]["=="](t.User,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "!=", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "FullName":
-                                        return !t.User.FullName.Equals(inp);
-                                    case "Unit":
-                                        return !t.User.Login.Equals(inp);
-                                    case "AdminPrivileges":
-                                        return !t.User.AdminPrivileges.Equals(bool.Parse(inp));
-                                    case "Meters":
-                                        return !t.User.Meters.Count.Equals(int.Parse(inp));
-                                    default: return false;
-                                }
-                            }
+                            "!=", (t, inp) => UserDict[inp.Remove(inp.IndexOf('\t'))]["!="](t.User,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            ">", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.User.Meters.Count > int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
+                            ">", (t, inp) => UserDict[inp.Remove(inp.IndexOf('\t'))][">"](t.User,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "<", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.User.Meters.Count < int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
+                            "<", (t, inp) => UserDict[inp.Remove(inp.IndexOf('\t'))]["<"](t.User,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            ">=", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.User.Meters.Count >= int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
+                            ">=", (t, inp) => UserDict[inp.Remove(inp.IndexOf('\t'))][">="](t.User,inp.Substring(inp.IndexOf('\t') + 1))
                         },
                         {
-                            "<=", (t, inp) =>
-                            {
-                                switch (inp.Remove(inp.IndexOf('.')))
-                                {
-                                    case "Meters":
-                                        return t.User.Meters.Count <= int.Parse(inp);
-                                    default: return false;
-                                }
-                            }
-                        }
+                            "<=", (t, inp) => UserDict[inp.Remove(inp.IndexOf('\t'))]["<="](t.User,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
                     }
                 },
-
-                /*{
+                {
                     "Показания", new Dictionary<string, Func<Meter, string, bool>>
                     {
                         {"==", (t, inp) => t.Readings.Count.Equals(int.Parse(inp))},
@@ -450,7 +267,7 @@ namespace MRS_web.Models
                         {">=", (t, inp) => t.Readings.Count >= int.Parse(inp)},
                         {"<=", (t, inp) => t.Readings.Count <= int.Parse(inp)}
                     }
-                }*/
+                }
             };
 
         /*Уст. Счётчик*/
@@ -576,17 +393,30 @@ namespace MRS_web.Models
                         {"<=", (t, inp) => t.TariffNumber <= int.Parse(inp)}
                     }
                 },
-                /*{
+                // Entity
+                {
                     "Счётчик", new Dictionary<string, Func<Reading, string, bool>>
                     {
-                        {"==", (t, inp) => ,
-                        {"!=", (t, inp) => !t.TariffNumber.Equals(int.Parse(inp))},
-                        {">", (t, inp) => t.TariffNumber > int.Parse(inp)},
-                        {"<", (t, inp) => t.TariffNumber < int.Parse(inp)},
-                        {">=", (t, inp) => t.TariffNumber >= int.Parse(inp)},
-                        {"<=", (t, inp) => t.TariffNumber <= int.Parse(inp)}
+                        {
+                            "==", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["=="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "!=", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["!="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            ">", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))][">"](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "<", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["<"](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            ">=", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))][">="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "<=", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["<="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
                     }
-                },*/
+                },
             };
 
         /*Параметр*/
@@ -688,6 +518,30 @@ namespace MRS_web.Models
                         {"<=", (t, inp) => t.TimeEnd <= System.TimeSpan.Parse(inp)}
                     }
                 },
+                // Entity
+                {
+                    "Тариф", new Dictionary<string, Func<TimeSpan, string, bool>>
+                    {
+                        {
+                            "==", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["=="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "!=", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["!="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            ">", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))][">"](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "<", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["<"](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            ">=", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))][">="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "<=", (t, inp) => TariffDict[inp.Remove(inp.IndexOf('\t'))]["<="](t.Tariff,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                    }
+                },
             };
 
         /*Документ*/
@@ -719,35 +573,97 @@ namespace MRS_web.Models
                         {"<=", (t, inp) => t.SigningDate <= DateTime.Parse(inp)}
                     }
                 },
+                // Entity
+                {
+                    "Счётчик", new Dictionary<string, Func<Document, string, bool>>
+                    {
+                        {
+                            "==", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["=="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "!=", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["!="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            ">", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))][">"](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "<", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["<"](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            ">=", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))][">="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                        {
+                            "<=", (t, inp) => MeterDict[inp.Remove(inp.IndexOf('\t'))]["<="](t.Meter,inp.Substring(inp.IndexOf('\t') + 1))
+                        },
+                    }
+                },
             };
 
-        static DataManager _dataManager;
-        static IEnumerable<Meter> meters = _dataManager.MetRepo.Meters();
-        static IEnumerable<InstalledMeter> instmeters = _dataManager.InstMetRepo.InstMaterss();
-        static IEnumerable<Tariff> tariffs = _dataManager.TarRepo.Tariffs();
-        static IEnumerable<User> users = _dataManager.UserRepo.Users();
-        static IEnumerable<Reading> readings = _dataManager.ReadRepo.Readings();
-        static IEnumerable<Document> documents = _dataManager.DocRepo.Documents();
-        static IEnumerable<Type> types = _dataManager.TypeRepo.Types();
-        static IEnumerable<Parametr> paparametrs = _dataManager.ParRepo.Parametrs();
-        static IEnumerable<TimeSpan> timespans = _dataManager.TimeSpanRepo.TimeSpans();
+        static IEnumerable<Meter> meters;
+        static IEnumerable<InstalledMeter> instmeters ;
+        static IEnumerable<Tariff> tariffs;
+        static IEnumerable<User> users;
+        static IEnumerable<Reading> readings;
+        static IEnumerable<Document> documents;
+        static IEnumerable<Type> types;
+        static IEnumerable<Parametr> paparametrs;
+        static IEnumerable<TimeSpan> timespans;
+
+        public RequestConstructor(DataManager _dm)
+        {
+            meters = _dm.MetRepo.Meters();
+            instmeters = _dm.InstMetRepo.InstMaterss();
+            tariffs = _dm.TarRepo.Tariffs();
+            users = _dm.UserRepo.Users().Union(_dm.UserRepo.Admins());
+            readings = _dm.ReadRepo.Readings();
+            documents = _dm.DocRepo.Documents();
+            types = _dm.TypeRepo.Types();
+            paparametrs = _dm.ParRepo.Parametrs();
+            timespans = _dm.TimeSpanRepo.TimeSpans();
+        }
 
         static string entity = "";
 
-        public static IEnumerable<IConstructor> GiveCollection(DataManager dm, string req)
+        static System.Type GiveType()
         {
-            _dataManager = dm;
+            switch (entity)
+            {
+                case "Счётчик":
+                    return typeof(Meter);
+                case "Уст. Счётчик":
+                    return typeof(InstalledMeter);
+                case "Пользователь":
+                    return typeof(User);
+                case "Тип":
+                    return typeof(Type);
+                case "Показатель":
+                    return typeof(Reading);
+                case "Параметр":
+                    return typeof(Parametr);
+                case "Тариф":
+                    return typeof(Tariff);
+                case "Врем. промежуток":
+                    return typeof(TimeSpan);
+                case "Документ":
+                    return typeof(Document);
+            }
+
+            return typeof(object);
+        }
+
+        public IEnumerable<IConstructor> GiveCollection(string req, out System.Type type)
+        {
             //req =
             //"&start=(&start=(&Entity=Счётчик&String=Название&Sign=!=&Input=3&end=)&Or=И&Entity=Счётчик&String=Название&Sign=!=&Input=Вода&end=)";
             //"&start=(&start=(&Entity=Пользователь&Bool=Администратор?&Sign=!=&Input=FALSE&end=)end=)";
             req += "&";
             entity = req.Substring(req.IndexOf("&Entity=")+8).Remove(req.Substring(req.IndexOf("&Entity=") + 8).IndexOf('&'));
-
+            type = GiveType();
             switch (entity)
             {
                 case "Счётчик":
                     return NewExpr(ref req);
-                case "Уст.Счётчик":
+                case "Уст. счётчик":
                     return NewExpr(ref req);
                 case "Пользователь":
                     return NewExpr(ref req);
@@ -811,11 +727,11 @@ namespace MRS_web.Models
             string key = first.Substring(1, first.IndexOf('=') - 1);
             string value = first.Substring(first.IndexOf('=') + 1);
 
-            if (key != "Or" && key != "And") return A;
+            if (key != "Logic") return A;
 
             req = req.Remove(0, first.Length);
 
-            if (key == "Or")
+            if (value == "ИЛИ")
             {
                 return NewExpr(ref req).Union(A);
             }
@@ -829,14 +745,33 @@ namespace MRS_web.Models
         {
             string first = req.Remove(req.Remove(0, 1).IndexOf('&') + 1);
             string key = first.Substring(1, first.IndexOf('=') - 1);
-            string value = first.Substring(first.IndexOf('=') + 1);
-            
+            string outputValue = first.Substring(first.IndexOf('=') + 1);
+
             req = req.Remove(0, first.Length);
+
+            string property = "";
+            int counter = 0; // счётчик чтоб долго не бродил малол ли нет Sign
+
+            while (true)
+            {
+                first = req.Remove(req.Remove(0, 1).IndexOf('&') + 1);
+                key = first.Substring(1, first.IndexOf('=') - 1);
+                if (key == "Sign")
+                    break;
+                string value = first.Substring(first.IndexOf('=') + 1);
+
+                req = req.Remove(0, first.Length);
+
+                property += '\t' + value;
                 
-            return Sign(ref req, value);
+                if (counter++>100)
+                    throw new LockRecursionException();
+            }
+
+            return Sign(ref req, outputValue, property.TrimStart('.'));
         }
 
-        static IEnumerable<IConstructor> Sign(ref string req, string propertyPath)
+        static IEnumerable<IConstructor> Sign(ref string req, string property, string fullVal="")
         {
             string first = req.Remove(req.Remove(0, 1).IndexOf('&') + 1);
             string key = first.Substring(1, first.IndexOf('=') - 1);
@@ -845,24 +780,27 @@ namespace MRS_web.Models
 
             value = value.Replace("Количество ", "");
             
-            return Input(ref req, value, propertyPath);
+            return Input(ref req, value, property, fullVal);
             
         }
 
-        static IEnumerable<IConstructor> Input(ref string req, string sign, string property)
+        static IEnumerable<IConstructor> Input(ref string req, string sign, string property, string value="")
         {
             string first = req.Remove(req.Remove(0, 1).IndexOf('&') + 1);
             string key = first.Substring(1, first.IndexOf('=') - 1);
-            string value = first.Substring(first.IndexOf('=') + 1);
+                   value += '\t' + first.Substring(first.IndexOf('=') + 1);
+
+            value = value.TrimStart('\t');
+            if(value.IsNullOrWhiteSpace())
+                throw new ArgumentNullException();
+
             req = req.Remove(0, first.Length);
-
-            System.Type type = typeof(string);
-
+            
             switch (entity)
             {
                 case "Счётчик":
                     return meters.Where(t => MeterDict[property][sign](t, value));
-                case "Уст. Счётчик":
+                case "Уст. счётчик":
                     return instmeters.Where(t => InstMeterDict[property][sign](t, value));
                 case "Пользователь":
                     return users.Where(t => UserDict[property][sign](t, value));

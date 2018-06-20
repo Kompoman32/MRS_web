@@ -12,7 +12,7 @@
 @using (Html.BeginForm("ExportParameters", "Database"))
 {
     <div style="padding: 5px">
-        <button type="submit" name="MeterId" value=@ViewData["MeterId"]><img width=30 height=30 src="~/Images/Excel.png"></button>
+        <button  class="excelButton" type="submit" name="MeterId" value=@ViewData["MeterId"]><img width=30 height=30 src="~/Images/Excel.png"></button>
     </div>
 }
 
@@ -21,6 +21,7 @@
         <tr>
             <th>Название</th>
             <th>Значение</th>
+            <th>Количество счётчиков</th>
         </tr>
     </thead>
 
@@ -30,6 +31,7 @@
             <tr>
                 <td>@p.Name</td>
                 <td>@p.Measure</td>
+                <td>@p.Meters.Count</td>
             </tr>
         }
     }

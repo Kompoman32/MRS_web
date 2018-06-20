@@ -13,7 +13,7 @@
 @using (Html.BeginForm("ExportTypesList", "Database"))
 {
     <div style="padding: 5px">
-        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
     </div>
 }
 
@@ -22,6 +22,7 @@
         <tr>
             <th>Название</th>
             <th>Единица измерения</th>
+            <th>Количество счётчиков</th>
         </tr>
     </thead>
     @{
@@ -30,6 +31,7 @@
             <tr>
                 <td>@t.Name</td>
                 <td>@t.Unit</td>
+                <td>@t.Meters</td>
             </tr>
         }
     }

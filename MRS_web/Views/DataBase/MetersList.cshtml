@@ -14,7 +14,7 @@
 @using (Html.BeginForm("ExportMeterList", "Database"))
 {
     <div style="padding: 5px">
-        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
     </div>
 }
 
@@ -25,6 +25,8 @@
             <th>Название</th>
             <th>Заводской номер</th>
             <th>Дата производства</th>
+            <th>Тариф</th>
+            <th>Тип</th>
             <th>Установлен</th>
             <th>Требуется продление</th>
         </tr>
@@ -36,6 +38,8 @@
             <td>@met.User.FullName</td>
             <td>@met.Name</td>
             <td>@met.ProductionId</td>
+            <td>@met.Tariff</td>
+            <td>@met.Type</td>
             <td>@met.ProductionDate.ToString("d")</td>
             @{
                 string str = "";
@@ -46,7 +50,7 @@
                 }
                 else
                 {
-                    <td class="boolTrue"></td>
+                    <td class="boolFalse"></td>
                 }
 
                 str = "bool";

@@ -15,7 +15,7 @@
 @using (Html.BeginForm("ExportParameterList", "Database"))
 {
     <div style="padding: 5px">
-        <button><img width=30 height=30 src="~/Images/Excel.png"></button>
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
     </div>
 }
 
@@ -24,6 +24,7 @@
     <tr>
         <th>Название</th>
         <th>Значение</th>
+        <th>Количество счётчиков</th>
     </tr>
     </thead>
     @if (parameters != null)
@@ -33,6 +34,7 @@
             <tr>
                 <td>@par.Name</td>
                 <td>@par.Measure</td>
+                <td>@par.Meters.Count</td>
             </tr>
         }
     }

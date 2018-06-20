@@ -219,6 +219,7 @@
     <Compile Include="Models\Repos\ParametrRepository.cs" />
     <Compile Include="Models\Repos\TypeRepository.cs" />
     <Compile Include="Models\Repos\UserRepository.cs" />
+    <Compile Include="Models\RequestConstructor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

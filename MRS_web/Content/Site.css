@@ -45,8 +45,14 @@ a:hover {
     color: var(--linkHov)
 }
 
-.IncludedView a.backButton {
+.IncludedView a.backButton,
+.IncludedView .excelButton {
     display: none
+}
+
+input {
+    background: var(--inputBack);
+    color: var(--inputClr);
 }
 
 table {
@@ -132,5 +138,10 @@ button:hover {
     font-size: 25px;
     padding: 10px 10px 10px 10px;
     text-decoration: none;
+}
+
+select {
+    background: var(--selectBack);
+    color: var(--selectClr);
 }
 

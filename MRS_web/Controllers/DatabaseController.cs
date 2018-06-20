@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -43,11 +44,12 @@ namespace MRS_web.Controllers
             string req=Server.UrlDecode(request);
             //req = "&start=(&start=(&Entity=Счётчик&Collection=Показания&Sign=Количество <&input=5&Or=ИЛИ&Entity=Счётчик&Entity=Пользователь&Bool=Администратор?&Sign===&input=False";
 
-            IEnumerable<IConstructor> collection;
+            IEnumerable<IConstructor> collection=null;
+            System.Type type= typeof(object);
             string msg = "";
             try
             {
-                collection = RequestConstructor.GiveCollection(_DataManager, req);
+                collection = new RequestConstructor(_DataManager).GiveCollection( req, out type).ToList();
             }
             catch (NullReferenceException e)
             {
@@ -60,17 +62,103 @@ namespace MRS_web.Controllers
             catch (Exception e)
             {
                 msg = "Ошибка в запросе, проверьте все типы введённых данных";
+                Debug.Write(e);
             }
 
-            //todo выбрать partial view
-            return PartialView("MetersList");
+            if (msg != "") return PartialView("Error",msg);
+
+            if (collection == null || !collection.Any())
+                return PartialView("Error", "Ничего не найдено");
+
+            if (type == typeof(Meter))
+            {
+                ViewData["Meters"] = collection?.Cast<Meter>();
+                return PartialView("MetersList");
+            }
+
+            if (type == typeof(InstalledMeter))
+            {
+                ViewData["Meters"] = collection?.Cast<InstalledMeter>();
+                return PartialView("MetersList");
+            }
+
+            if (type == typeof(User))
+            {
+                ViewData["Users"] = collection?.Cast<User>();
+                return PartialView("UserList");
+            }
+
+            if (type == typeof(Tariff))
+            {
+                ViewData["Tariffes"] = collection?.Cast<Tariff>();
+                return PartialView("TariffList");
+            }
+
+            if (type == typeof(MRS_web.Models.EDM.TimeSpan))
+            {
+                ViewData["TimeSpans"] = collection?.Cast<MRS_web.Models.EDM.TimeSpan>();
+                return PartialView("TimeSpans");
+            }
+
+            if (type == typeof(MRS_web.Models.EDM.Type))
+            {
+                ViewData["Types"] = collection?.Cast<MRS_web.Models.EDM.Type>();
+                return PartialView("TypeList");
+            }
+
+            if (type == typeof(Parametr))
+            {
+                ViewData["Parameters"] = collection?.Cast<Parametr>();
+                return PartialView("ParameterList");
+            }
+
+            if (type == typeof(Reading))
+            {
+                ViewData["Readings"] = collection?.Cast<Reading>();
+                return PartialView("Readings");
+            }
+
+            if (type == typeof(Document))
+            {
+                ViewData["Documents"] = collection?.Cast<Document>();
+                return PartialView("DocumentList");
+            }
+
+            return PartialView("Error","очень непонятно, предоставьте программисту скриншот данных при которых это произошло");
         }
 
+        public void ConstructorToExcel(string request)
+        {
+            string req = Server.UrlDecode(request);
+            //req = "&start=(&start=(&Entity=Счётчик&Collection=Показания&Sign=Количество <&input=5&Or=ИЛИ&Entity=Счётчик&Entity=Пользователь&Bool=Администратор?&Sign===&input=False";
+
+            IEnumerable<IConstructor> collection = null;
+            System.Type type = typeof(object);
+            string msg = "";
+            try
+            {
+                collection = new RequestConstructor(_DataManager).GiveCollection(req, out type);
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e);
+                return;
+            }
+
+            if (msg != "") return;
+
+            string filename = "search.xlsx";
+
+            DataManager.ExportToExcel(filename, new []{DataManager.GetDataTable(collection)});
+            ExportResponce(filename);
+        }
 
         public ActionResult MetersList(string userLogin="")
         {
-            ViewData["Meters"] = ((User)Session["User"]).AdminPrivileges? _DataManager.MetRepo.Meters(): ((User)Session["User"]).Meters;
-            if (((User) Session["User"]).AdminPrivileges && !userLogin.IsNullOrWhiteSpace())
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
+
+            ViewData["Meters"] = user.AdminPrivileges? _DataManager.MetRepo.Meters(): user.Meters;
+            if (user.AdminPrivileges && !userLogin.IsNullOrWhiteSpace())
                 ViewData["Meters"] = _DataManager.UserRepo.GetUser(userLogin)?.Meters;
 
             ViewData["UserLogin"] = userLogin;
@@ -79,8 +167,10 @@ namespace MRS_web.Controllers
         }
         public void ExportMeterList(string userLogin = "")
         {
-            List<Meter> list = (((User)Session["User"]).AdminPrivileges ? _DataManager.MetRepo.Meters() : ((User)Session["User"]).Meters).ToList();
-            if (((User)Session["User"]).AdminPrivileges && !userLogin.IsNullOrWhiteSpace())
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
+
+            List<Meter> list = (user.AdminPrivileges ? _DataManager.MetRepo.Meters() : user.Meters).ToList();
+            if (user.AdminPrivileges && !userLogin.IsNullOrWhiteSpace())
                 list = _DataManager.UserRepo.GetUser(userLogin)?.Meters.ToList();
 
             string filename = "meterList.xlsx";
@@ -92,7 +182,7 @@ namespace MRS_web.Controllers
 
         public ActionResult Meter(long MeterId)
         {
-            User user = (User) Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -104,7 +194,7 @@ namespace MRS_web.Controllers
         }
         public void ExportMeter(long MeterId)
         {
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -144,21 +234,24 @@ namespace MRS_web.Controllers
             if (UserLogin == null)
                 return HttpNotFound();
 
-            if (!UserLogin.IsNullOrWhiteSpace() && !(Session["User"] as User).AdminPrivileges)
+            User currentUser = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
+
+            if (!UserLogin.IsNullOrWhiteSpace() && !currentUser.AdminPrivileges)
                 return HttpNotFound();
 
-            ViewData["User"] = UserLogin.IsNullOrWhiteSpace()? Session["User"] : _DataManager.UserRepo.GetUser(UserLogin);
+            ViewData["User"] = UserLogin.IsNullOrWhiteSpace()? currentUser : _DataManager.UserRepo.GetUser(UserLogin);
 
             return View();
         }
         public void ExportUser(string UserLogin = "")
         {
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
 
-            if ((Session["User"] as User).Login!=UserLogin)
-            if (!UserLogin.IsNullOrWhiteSpace() && !(Session["User"] as User).AdminPrivileges)
+            if (user.Login!=UserLogin)
+            if (!UserLogin.IsNullOrWhiteSpace() && !user.AdminPrivileges)
                 throw new MemberAccessException();
 
-            User us = UserLogin.IsNullOrWhiteSpace() ? Session["User"] as User : _DataManager.UserRepo.GetUser(UserLogin);
+            User us = UserLogin.IsNullOrWhiteSpace() ? user : _DataManager.UserRepo.GetUser(UserLogin);
 
             List<string[,]> toExport = new List<string[,]>
             {
@@ -231,7 +324,7 @@ namespace MRS_web.Controllers
 
         public ActionResult Parameters(long MeterId)
         {
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -247,7 +340,7 @@ namespace MRS_web.Controllers
         {
             if (!long.TryParse(MeterId, out long  meterId)) return;
 
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(meterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -260,7 +353,7 @@ namespace MRS_web.Controllers
 
         public ActionResult Readings(long MeterId)
         {
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -275,7 +368,7 @@ namespace MRS_web.Controllers
         }
         public void ExportReadings(long MeterId)
         {
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -288,7 +381,7 @@ namespace MRS_web.Controllers
 
         public ActionResult DocumentList(long MeterId)
         {
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)
@@ -302,7 +395,7 @@ namespace MRS_web.Controllers
         }
         public void ExportDocuments(long MeterId)
         {
-            User user = (User)Session["User"];
+            User user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString());
             Meter met = _DataManager.MetRepo.GetMeter(MeterId);
 
             if (!user.AdminPrivileges && met.User.Login != user.Login)

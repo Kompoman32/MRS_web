@@ -90,7 +90,7 @@ namespace MRS_web.Controllers
         {
             AddMeterInitFields();
 
-            string user = (Session["User"] as User)?.Login;
+            string user = _DataManager.UserRepo.GetUser(Session["UserLogin"].ToString()).Login;
 
             if (!CheclFields(user, Name, Description, TypeId, CapacityBefComma, CapacityAftComma, ProductionId, ProductionDate,
                 TariffId, Reading, meterParameters))
